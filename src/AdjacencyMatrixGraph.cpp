@@ -65,6 +65,5 @@ int AdjacencyMatrixGraph::findDegree(int vertex) {
 
 void AdjacencyMatrixGraph::clear(){
     matrix.clear();
-    Graph::clear();
 }
 

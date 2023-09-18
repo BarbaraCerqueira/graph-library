@@ -2,6 +2,8 @@
 #include "AdjacencyMatrixGraph.h"
 #include <vector>
 #include <iostream>
+#include <sys/resource.h>
+#include <thread>
 
 using namespace std;
 
@@ -24,7 +26,17 @@ int main() {
     degree = graph.findDegree(1);
     cout << "Grau do vertice 1: " << degree << endl;
 
+    cout << endl;
+
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) {
+        cout << "Memória usada pelo processo: " << usage.ru_maxrss << " KB" << endl;
+    } else {
+        cerr << "Erro ao obter informações de uso de recursos" << endl;
+    }
     
+    this_thread::sleep_for(chrono::seconds(15));
+
     /*graph.setGraphSize(5);
 
     // Add some edges
