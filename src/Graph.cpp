@@ -25,14 +25,17 @@ bool Graph::readGraphFromFile(string filepath) {
     int source, destination;
     while (file >> source >> destination) {
         addEdge(source, destination);
+        numEdges++;
     }
 
     file.close();
     return true; // Graph read succesfully
 }
 
-void Graph::addEdge(int source, int destination) {
-    numEdges++;
+
+void Graph::showVariables(){
+    cout << "Numero de vertices: " << numVertices << endl;
+    cout << "Numero de arestas: " << numEdges << endl;
 }
 
 void Graph::clear(){

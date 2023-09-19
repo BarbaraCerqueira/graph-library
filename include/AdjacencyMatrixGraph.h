@@ -18,8 +18,8 @@ public:
     void addEdge(int source, int destination) override;
     void addVertex();
     vector<int> findNeighbors(int vertex) override;
-    int findDegree(int vertex);
-    void clear();
+    int findDegree(int vertex) override;
+    void clear() override;
 };
 
 #endif // ADJACENCY_MATRIX_GRAPH_H

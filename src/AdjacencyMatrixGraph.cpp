@@ -1,7 +1,5 @@
 #include "AdjacencyMatrixGraph.h"
 
-using namespace std;
-
 
 AdjacencyMatrixGraph::AdjacencyMatrixGraph() : Graph() {
     matrix = vector<vector<int>>();
@@ -12,14 +10,12 @@ void AdjacencyMatrixGraph::setGraphSize(int _numVertices) {
     for (int i = 0; i < _numVertices; i++) {
         matrix[i].resize(_numVertices);
     }
-    numVertices = _numVertices;
 }
 
 void AdjacencyMatrixGraph::addEdge(int source, int destination) {
     if (source > 0 && source <= numVertices && destination > 0 && destination <= numVertices) {
         matrix[source-1][destination-1] = 1;
         matrix[destination-1][source-1] = 1;
-        numEdges++;
     } else {
         cout << "Invalid vertices!" << endl;
     }
