@@ -24,6 +24,8 @@ public:
     Graph();
     bool readGraphFromFile(string filepath);
     void showVariables();
+    void BFS(int startVertex);
+    void DFS(int startVertex);
 };
 
 #endif // GRAPH_H

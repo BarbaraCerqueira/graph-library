@@ -10,13 +10,16 @@ using namespace std;
 
 // Testing
 int main() {
-    bool reading;
+    bool reading1;
+    bool reading2;
     int degree;
 
-    AdjacencyListGraph graph; // Create graph
+    AdjacencyListGraph graph1; // Create graph
+    AdjacencyListGraph graph2; // Create graph
 
-    reading = graph.readGraphFromFile("case-study-graphs/grafo_1.txt");
-    if (reading){
+    reading1 = graph1.readGraphFromFile("case-study-graphs/teste_1.txt");
+    reading2 = graph2.readGraphFromFile("case-study-graphs/teste_2.txt");
+    if (reading1 && reading2){
         cout << "Leitura bem sucedida! " << endl;
     }
     else {
@@ -25,12 +28,20 @@ int main() {
 
     cout << endl; // Jump Line
 
-    degree = graph.findDegree(108);
-    cout << "Grau do vertice 108: " << degree << endl;
+    degree = graph2.findDegree(4);
+    cout << "Grau do vertice 4: " << degree << endl;
 
     cout << endl; // Jump Line
 
-    graph.showVariables();
+    graph1.showVariables();
+
+    cout << endl; // Jump Line
+
+    graph1.BFS(5);
+
+    cout << endl; // Jump Line
+
+    graph2.DFS(4);
 
     cout << endl; // Jump Line
 
