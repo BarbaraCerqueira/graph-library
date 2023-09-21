@@ -12,14 +12,21 @@ using namespace std;
 int main() {
     bool reading1;
     bool reading2;
+    bool reading3;
+    bool reading4;
     int degree;
 
     AdjacencyListGraph graph1; // Create graph
     AdjacencyListGraph graph2; // Create graph
 
+    AdjacencyMatrixGraph graph3; // Create graph
+    AdjacencyMatrixGraph graph4; // Create graph
+
     reading1 = graph1.readGraphFromFile("case-study-graphs/teste_1.txt");
     reading2 = graph2.readGraphFromFile("case-study-graphs/teste_2.txt");
-    if (reading1 && reading2){
+    reading3 = graph3.readGraphFromFile("case-study-graphs/teste_1.txt");
+    reading4 = graph4.readGraphFromFile("case-study-graphs/teste_2.txt");
+    if (reading1 && reading2 && reading3 && reading4){
         cout << "Leitura bem sucedida! " << endl;
     }
     else {
@@ -35,13 +42,21 @@ int main() {
 
     graph1.showVariables();
 
-    cout << endl; // Jump Line
+    cout << endl; //Jump Line
 
     graph1.BFS(5);
 
     cout << endl; // Jump Line
 
+    graph3.BFS(5);
+
+    cout << endl; // Jump Line
+
     graph2.DFS(4);
+
+    cout << endl; // Jump Line
+
+    graph4.DFS(1);
 
     cout << endl; // Jump Line
 

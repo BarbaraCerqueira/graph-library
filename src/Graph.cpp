@@ -80,6 +80,8 @@ void Graph::DFS(int startVertex) {
         while (!stack.empty()) {
             // Pop a vertex from the stack and mark it as visited
             int currentVertex = stack.top();
+            vector<int> neighbors = findNeighbors(currentVertex);
+
             stack.pop();
 
             if (!visited[currentVertex]) {
@@ -88,7 +90,8 @@ void Graph::DFS(int startVertex) {
             }
 
             // Push all unvisited adjacent vertices onto the stack
-            for (int adjacentVertex : findNeighbors(currentVertex)) {
+            for (int i = neighbors.size() - 1; i >= 0; --i) {
+                int adjacentVertex = neighbors[i];
                 if (!visited[adjacentVertex]) {
                     stack.push(adjacentVertex);
                 }
