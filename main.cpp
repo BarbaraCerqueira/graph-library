@@ -5,69 +5,61 @@
 #include <iostream>
 #include <sys/resource.h>
 #include <thread>
+#include <chrono>
 
 using namespace std;
 
-// Testing
+template<typename Function>
+double measureExecutionTime(Function func);
+
+
 int main() {
-    bool reading1;
-    bool reading2;
-    bool reading3;
-    bool reading4;
-    int degree;
 
-    AdjacencyListGraph graph1; // Create graph
-    AdjacencyListGraph graph2; // Create graph
+    AdjacencyListGraph graph; // Create graph
 
-    AdjacencyMatrixGraph graph3; // Create graph
-    AdjacencyMatrixGraph graph4; // Create graph
-
-    reading1 = graph1.readGraphFromFile("case-study-graphs/teste_1.txt");
-    reading2 = graph2.readGraphFromFile("case-study-graphs/teste_2.txt");
-    reading3 = graph3.readGraphFromFile("case-study-graphs/teste_1.txt");
-    reading4 = graph4.readGraphFromFile("case-study-graphs/teste_2.txt");
-    if (reading1 && reading2 && reading3 && reading4){
-        cout << "Leitura bem sucedida! " << endl;
-    }
-    else {
-        cout << "Erro na leitura! " << endl;
-    }
-
+    graph.readGraphFromFile("case-study-graphs/grafo_2.txt");
     cout << endl; // Jump Line
 
-    degree = graph2.findDegree(4);
-    cout << "Grau do vertice 4: " << degree << endl;
-
-    cout << endl; // Jump Line
-
-    graph1.showVariables();
-
-    cout << endl; //Jump Line
-
-    graph1.BFS(5);
-
-    cout << endl; // Jump Line
-
-    graph3.BFS(5);
-
-    cout << endl; // Jump Line
-
-    graph2.DFS(4);
-
-    cout << endl; // Jump Line
-
-    graph4.DFS(1);
-
-    cout << endl; // Jump Line
-
+    // Pause execution to stabilize memory usage
+    this_thread::sleep_for(chrono::seconds(5));
     struct rusage usage;
     if (getrusage(RUSAGE_SELF, &usage) == 0) {
         cout << "Memória usada pelo processo: " << usage.ru_maxrss << " KB" << endl;
     } else {
-        cerr << "Erro ao obter informações de uso de recursos" << endl;
+        cerr << "Erro ao obter informações de uso de recursos." << endl;
     }
 
-    // this_thread::sleep_for(chrono::seconds(15));
+    cout << endl; // Jump Line
 
+    double durationInSeconds = measureExecutionTime([&graph](){
+        graph.DFS(1);
+    });
+    cout << "DFS Wall Time: " << durationInSeconds << " seconds." << endl;
+    
+    cout << endl; // Jump Line
+
+    vector<vector<int>> connectedComponents = graph.findConnectedComponents();
+    cout << "Graph has " << connectedComponents.size() << " connected component(s)." << endl; 
+    // Print the connected components' size
+    int counter = 1;
+    for (const vector<int>& component : connectedComponents) {
+        cout << "Connected Component " << counter << ": " << component.size() << " vertices." << endl;
+        counter++;
+    }
+    
     return 0;
+}
+
+
+template<typename Function>
+double measureExecutionTime(Function func) {
+    auto startTime = chrono::high_resolution_clock::now();
+    
+    // Execute o trecho de código que você deseja medir
+    func();
+
+    auto endTime = chrono::high_resolution_clock::now();
+    
+    auto duration = chrono::duration_cast<chrono::microseconds>(endTime - startTime);
+    return static_cast<double>(duration.count()) / 1'000'000.0; // Time in seconds
 }

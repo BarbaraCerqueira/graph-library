@@ -2,7 +2,6 @@
 
 
 AdjacencyMatrixGraph::AdjacencyMatrixGraph() : Graph() {
-    matrix = vector<vector<int>>();
 }
 
 void AdjacencyMatrixGraph::setGraphSize(int _numVertices) {

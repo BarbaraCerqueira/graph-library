@@ -2,7 +2,6 @@
 
 
 AdjacencyListGraph::AdjacencyListGraph() : Graph() {
-    adjacencyList = vector<list<int>>();
 }
 
 void AdjacencyListGraph::setGraphSize(int _numVertices) {
