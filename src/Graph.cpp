@@ -3,8 +3,6 @@
 using namespace std;
 
 Graph::Graph() {
-    numVertices = 0;
-    numEdges = 0;
 }
 
 bool Graph::readGraphFromFile(string filepath) {
@@ -213,6 +211,7 @@ int Graph::shortestDistance(int source, int destination) {
 
 int Graph::diameter() {
     int maxDiameter = 0;
+    int totalVerticesProcessed = 0; // For progress bar
 
     // Run BFS from each vertex to find the longest shortest path
     #pragma omp parallel for reduction(max : maxDiameter)
@@ -224,7 +223,26 @@ int Graph::diameter() {
 
         // Update the maximum diameter if needed
         maxDiameter = max(maxDiameter, maxLevel);
+
+        // Update and print the progress bar inside critical section
+        #pragma omp critical
+        {
+            totalVerticesProcessed++;
+            double progress = static_cast<double>(totalVerticesProcessed) / numVertices * 100;
+
+            cout << "\rProgress: [";
+            int barWidth = 50;
+            int pos = barWidth * progress / 100;
+            for (int i = 0; i < barWidth; ++i) {
+                if (i < pos) cout << "=";
+                else cout << " ";
+            }
+            cout << "] " << int(progress) << "%";
+            cout.flush();
+        }
     }
+
+    cout << endl;
 
     return maxDiameter;
 }

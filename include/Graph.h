@@ -21,8 +21,8 @@ struct SearchResult {
 
 class Graph {
 protected:
-    int numVertices;
-    int numEdges;
+    int numVertices = 0;
+    int numEdges = 0;
 
     virtual void addEdge(int source, int destination) = 0;
     virtual void setGraphSize(int _numVertices) = 0;

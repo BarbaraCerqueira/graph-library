@@ -17,7 +17,7 @@ int main() {
 
     AdjacencyMatrixGraph graph; // Create graph
 
-    graph.readGraphFromFile("case-study-graphs/grafo_1.txt");
+    graph.readGraphFromFile("case-study-graphs/teste_3.txt");
     //graph.readGraphFromFile("case-study-graphs/teste_3.txt");
     cout << endl; // Jump Line
 
@@ -33,7 +33,7 @@ int main() {
     cout << endl; // Jump Line
 
     double durationInSeconds = measureExecutionTime([&graph](){
-        graph.DFS(1);
+        graph.DFS(1, false);
     });
     cout << "DFS Wall Time: " << durationInSeconds << " seconds." << endl;
     
