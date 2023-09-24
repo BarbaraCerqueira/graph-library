@@ -198,6 +198,37 @@ vector<vector<int>> Graph::findConnectedComponents() {
     return components;
 }
 
+int Graph::shortestDistance(int source, int destination) {
+    // Run BFS from the source vertex
+    SearchResult result = BFS(source, false);
+
+    // Check if the destination vertex is reachable
+    if (!result.visited[destination - 1]) {
+        return -1; // The destination is not reachable from the source
+    }
+
+    // Return the shortest distance to the destination vertex
+    return result.level[destination - 1];
+}
+
+int Graph::diameter() {
+    int maxDiameter = 0;
+
+    // Run BFS from each vertex to find the longest shortest path
+    #pragma omp parallel for reduction(max : maxDiameter)
+    for (int startVertex = 1; startVertex <= numVertices; ++startVertex) {
+        SearchResult result = BFS(startVertex, false);
+
+        // Find the maximum level in the BFS result
+        int maxLevel = *max_element(result.level.begin(), result.level.end());
+
+        // Update the maximum diameter if needed
+        maxDiameter = max(maxDiameter, maxLevel);
+    }
+
+    return maxDiameter;
+}
+
 void Graph::clear(){
     numVertices = 0;
     numEdges = 0;

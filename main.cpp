@@ -15,9 +15,10 @@ double measureExecutionTime(Function func);
 
 int main() {
 
-    AdjacencyListGraph graph; // Create graph
+    AdjacencyMatrixGraph graph; // Create graph
 
-    graph.readGraphFromFile("case-study-graphs/grafo_2.txt");
+    graph.readGraphFromFile("case-study-graphs/grafo_1.txt");
+    //graph.readGraphFromFile("case-study-graphs/teste_3.txt");
     cout << endl; // Jump Line
 
     // Pause execution to stabilize memory usage
@@ -38,6 +39,22 @@ int main() {
     
     cout << endl; // Jump Line
 
+    int distance;
+    durationInSeconds = measureExecutionTime([&graph, &distance](){
+        distance = graph.shortestDistance(1, 8);
+    });
+    cout << "Shortest Distance Wall Time: " << durationInSeconds << " seconds." << endl;
+    cout << "Shortest Distance 1 and 8: " << distance << endl;
+    cout << endl; // Jump Line
+
+    int diameter;
+    durationInSeconds = measureExecutionTime([&graph, &diameter](){
+        diameter = graph.diameter();
+    });
+    cout << "Diameter Wall Time: " << durationInSeconds << " seconds." << endl;
+    cout << "Graph diameter: " << diameter << endl;
+    cout << endl; // Jump Line
+
     vector<vector<int>> connectedComponents = graph.findConnectedComponents();
     cout << "Graph has " << connectedComponents.size() << " connected component(s)." << endl; 
     // Print the connected components' size
@@ -55,7 +72,7 @@ template<typename Function>
 double measureExecutionTime(Function func) {
     auto startTime = chrono::high_resolution_clock::now();
     
-    // Execute o trecho de código que você deseja medir
+    // Executes code snippet
     func();
 
     auto endTime = chrono::high_resolution_clock::now();

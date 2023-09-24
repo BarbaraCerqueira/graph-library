@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -Wno-unused-parameter -g -O3
+CXXFLAGS = -Wall -Wextra -Wno-unused-parameter -g -fopenmp -O3 
 INC_DIR = include
 SRC_DIR = src
 BUILD_DIR = build

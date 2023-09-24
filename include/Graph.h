@@ -7,6 +7,8 @@
 #include <stack>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+#include <omp.h>
 
 using namespace std;
 
@@ -38,6 +40,8 @@ public:
     SearchResult BFS(int startVertex, bool outputToFile = true);
     SearchResult DFS(int startVertex, bool outputToFile = true);
     vector<vector<int>> findConnectedComponents();
+    int shortestDistance(int source, int destination);
+    int diameter();
 };
 
 #endif // GRAPH_H
