@@ -193,6 +193,11 @@ vector<vector<int>> Graph::findConnectedComponents() {
         }
     }
 
+    // Sort connected components in descending order
+    sort(components.begin(), components.end(), [](const vector<int>& a, const vector<int>& b) {
+        return a.size() > b.size();
+    });
+
     return components;
 }
 
@@ -312,9 +317,6 @@ void Graph::generateGraphInfoFile() {
     outFile << "---------------------------------------------" << endl << endl;
 
     vector<vector<int>> components = findConnectedComponents();
-    sort(components.begin(), components.end(), [](const vector<int>& a, const vector<int>& b) {
-        return a.size() > b.size();
-    });
 
     outFile << "Number of connected components: " << components.size() << endl;
 

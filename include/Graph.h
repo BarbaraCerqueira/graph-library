@@ -38,6 +38,7 @@ protected:
 
 public:
     Graph();
+    virtual ~Graph() {};
     bool readGraphFromFile(string filepath);
     SearchResult BFS(int startVertex, bool outputToFile = true);
     SearchResult DFS(int startVertex, bool outputToFile = true);
