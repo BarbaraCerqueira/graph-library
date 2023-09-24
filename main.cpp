@@ -18,11 +18,10 @@ int main() {
     AdjacencyMatrixGraph graph; // Create graph
 
     graph.readGraphFromFile("case-study-graphs/teste_3.txt");
-    //graph.readGraphFromFile("case-study-graphs/teste_3.txt");
     cout << endl; // Jump Line
 
     // Pause execution to stabilize memory usage
-    this_thread::sleep_for(chrono::seconds(5));
+    //this_thread::sleep_for(chrono::seconds(5));
     struct rusage usage;
     if (getrusage(RUSAGE_SELF, &usage) == 0) {
         cout << "Memória usada pelo processo: " << usage.ru_maxrss << " KB" << endl;
@@ -32,28 +31,30 @@ int main() {
 
     cout << endl; // Jump Line
 
-    double durationInSeconds = measureExecutionTime([&graph](){
-        graph.DFS(1, false);
-    });
-    cout << "DFS Wall Time: " << durationInSeconds << " seconds." << endl;
+    // double durationInSeconds = measureExecutionTime([&graph](){
+    //     graph.DFS(1, false);
+    // });
+    // cout << "DFS Wall Time: " << durationInSeconds << " seconds." << endl;
     
-    cout << endl; // Jump Line
+    // cout << endl; // Jump Line
 
-    int distance;
-    durationInSeconds = measureExecutionTime([&graph, &distance](){
-        distance = graph.shortestDistance(1, 8);
-    });
-    cout << "Shortest Distance Wall Time: " << durationInSeconds << " seconds." << endl;
-    cout << "Shortest Distance 1 and 8: " << distance << endl;
-    cout << endl; // Jump Line
+    // int distance;
+    // durationInSeconds = measureExecutionTime([&graph, &distance](){
+    //     distance = graph.shortestDistance(1, 8);
+    // });
+    // cout << "Shortest Distance Wall Time: " << durationInSeconds << " seconds." << endl;
+    // cout << "Shortest Distance 1 and 8: " << distance << endl;
+    // cout << endl; // Jump Line
 
-    int diameter;
-    durationInSeconds = measureExecutionTime([&graph, &diameter](){
-        diameter = graph.diameter();
-    });
-    cout << "Diameter Wall Time: " << durationInSeconds << " seconds." << endl;
-    cout << "Graph diameter: " << diameter << endl;
-    cout << endl; // Jump Line
+    // int diameter;
+    // durationInSeconds = measureExecutionTime([&graph, &diameter](){
+    //     diameter = graph.diameter();
+    // });
+    // cout << "Diameter Wall Time: " << durationInSeconds << " seconds." << endl;
+    // cout << "Graph diameter: " << diameter << endl;
+    // cout << endl; // Jump Line
+
+    graph.generateGraphInfoFile();
 
     vector<vector<int>> connectedComponents = graph.findConnectedComponents();
     cout << "Graph has " << connectedComponents.size() << " connected component(s)." << endl; 

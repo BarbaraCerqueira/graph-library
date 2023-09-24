@@ -34,6 +34,8 @@ protected:
                         const vector<int>& parent, 
                         const vector<int>& level, 
                         string searchName);
+    vector<int> getSortedVertexDegrees();
+
 public:
     Graph();
     bool readGraphFromFile(string filepath);
@@ -42,6 +44,7 @@ public:
     vector<vector<int>> findConnectedComponents();
     int shortestDistance(int source, int destination);
     int diameter();
+    void generateGraphInfoFile();
 };
 
 #endif // GRAPH_H

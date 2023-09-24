@@ -247,6 +247,95 @@ int Graph::diameter() {
     return maxDiameter;
 }
 
+vector<int> Graph::getSortedVertexDegrees(){
+    vector<int> degree (numVertices);
+
+    for (int vertex = 1; vertex <= numVertices; ++vertex) {
+        degree[vertex-1] = findDegree(vertex);
+    }
+
+    sort(degree.begin(), degree.end());
+
+    return degree;
+}
+
+void Graph::generateGraphInfoFile() {
+    string filename = "graph_info.txt";
+    ofstream outFile(filename);
+
+    if (!outFile.is_open()) {
+        cerr << "Error opening the file " << filename << endl;
+        return;
+    }
+
+    outFile << "General Graph Information" << endl;
+    outFile << "---------------------------------------------" << endl << endl;
+
+    // Number of vertices and edges
+    outFile << "Number of vertices: " << numVertices << endl;
+    outFile << "Number of edges: " << numEdges << endl;
+    outFile << endl;
+
+    // Minimum, maximum, and average degree
+    outFile << "Vertex Degree" << endl;
+    outFile << "---------------------------------------------" << endl << endl;
+
+    vector<int> degrees = getSortedVertexDegrees();
+    int minDegree = degrees.front();
+    int maxDegree = degrees.back();
+    int sumDegrees = 0;
+
+    for (int degree : degrees) {
+        sumDegrees += degree;
+    }
+
+    double avgDegree = static_cast<double>(sumDegrees) / numVertices;
+
+    outFile << "Minimum degree: " << minDegree << endl;
+    outFile << "Maximum degree: " << maxDegree << endl;
+    outFile << "Average degree: " << avgDegree << endl;
+
+    // Degree median
+    int medianDegree;
+
+    if (numVertices % 2 == 0) {
+        medianDegree = (degrees[numVertices / 2 - 1] + degrees[numVertices / 2]) / 2;
+    } else {
+        medianDegree = degrees[numVertices / 2];
+    }
+
+    outFile << "Median degree: " << medianDegree << endl;
+    outFile << endl;
+
+    // Information about connected components
+    outFile << "Connected Components" << endl;
+    outFile << "---------------------------------------------" << endl << endl;
+
+    vector<vector<int>> components = findConnectedComponents();
+    sort(components.begin(), components.end(), [](const vector<int>& a, const vector<int>& b) {
+        return a.size() > b.size();
+    });
+
+    outFile << "Number of connected components: " << components.size() << endl;
+
+    for (size_t i = 0; i < components.size(); ++i) {
+        outFile << "Size of component " << i + 1 << ": " << components[i].size() << " vertices" << endl;
+        outFile << "Vertices of component " << i + 1 << ": ";
+        
+        for (size_t j = 0; j < components[i].size(); ++j) {
+            outFile << components[i][j];
+
+            if (j != components[i].size() - 1) {
+                outFile << ", ";
+            }
+        }
+
+        outFile << endl;
+    }
+
+    outFile.close();
+}
+
 void Graph::clear(){
     numVertices = 0;
     numEdges = 0;
