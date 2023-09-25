@@ -11,8 +11,9 @@ using namespace std;
 
 template<typename Function>
 double wallTime(Function func);
+void getMemoryUsage();
 int userInteraction(Graph* graph);
-
+int caseStudy(Graph* graph);
 
 int main() {
 
@@ -42,36 +43,10 @@ int main() {
     int choice;
     Graph* graph = nullptr;;
 
-    cout << endl;
-    cout << "Graph Library Testing Interface" << endl;
-    cout << "-------------------------------" << endl << endl;
+    cout << endl << "Graph Library Testing Interface" << endl;
+    cout << "-------------------------------" << endl;
 
-    cout << "Choose the graph representation:" << endl;
-    cout << "1. Adjacency Matrix" << endl;
-    cout << "2. Adjacency List" << endl;
-    cin >> choice;
-
-    if (choice == 1) {
-        graph = new AdjacencyMatrixGraph();
-    } else if (choice == 2) {
-        graph = new AdjacencyListGraph();
-    } else {
-        cout << "Invalid choice." << endl;
-        return 1;
-    }
-
-    string filepath;
-    cout << "Enter the path to the graph file: ";
-    cin >> filepath;
-
-    if (!graph->readGraphFromFile(filepath)) {
-        cout << "Error reading the graph file." << endl;
-        delete graph;
-        return 1;
-    }
-
-    cout << endl;
-    cout << "Choose mode:" << endl;
+    cout << endl << "Choose mode:" << endl;
     cout << "1. User Interaction" << endl;
     cout << "2. Run Case Study" << endl;
     cin >> choice;
@@ -90,7 +65,6 @@ int main() {
     return 0;
 }
 
-
 template<typename Function>
 double wallTime (Function func) {
     auto startTime = chrono::high_resolution_clock::now();
@@ -104,13 +78,45 @@ double wallTime (Function func) {
     return static_cast<double>(duration.count()) / 1'000'000.0; // Time in seconds
 }
 
+void getMemoryUsage() {
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) {
+        cout << "Memory used by the process: " << static_cast<double>(usage.ru_maxrss) / 1024.0 << " MB" << endl;
+    } else {
+        cerr << "Error getting resource usage information." << endl;
+    }
+}
+
 int userInteraction(Graph* graph) {
     int choice;
     double duration;
 
+    cout << endl << "Choose the graph representation:" << endl;
+    cout << "1. Adjacency Matrix" << endl;
+    cout << "2. Adjacency List" << endl;
+    cin >> choice;
+
+    if (choice == 1) {
+        graph = new AdjacencyMatrixGraph();
+    } else if (choice == 2) {
+        graph = new AdjacencyListGraph();
+    } else {
+        cout << "Invalid choice." << endl;
+        return 1;
+    }
+
+    string filepath;
+    cout << endl << "Enter the path to the graph file: ";
+    cin >> filepath;
+
+    if (!graph->readGraphFromFile(filepath)) {
+        cout << "Error reading the graph file." << endl;
+        delete graph;
+        return 1;
+    }
+
     while (true) {
-        cout << endl;
-        cout << "Choose an operation:" << endl;
+        cout << endl << "Choose an operation:" << endl;
         cout << "1. BFS" << endl;
         cout << "2. DFS" << endl;
         cout << "3. Find Connected Components" << endl;
@@ -178,12 +184,7 @@ int userInteraction(Graph* graph) {
                 break;
             }
             case 7: {
-                struct rusage usage;
-                if (getrusage(RUSAGE_SELF, &usage) == 0) {
-                    cout << "Memory used by the process: " << usage.ru_maxrss << " KB" << endl;
-                } else {
-                    cerr << "Error getting resource usage information." << endl;
-                }
+                getMemoryUsage();
                 break;
             }
             case 8: {
@@ -198,3 +199,8 @@ int userInteraction(Graph* graph) {
 
     return 0;
 } 
+
+int caseStudy(Graph* graph) {
+
+    ofstream resultsFile("case_study.txt");
+}
