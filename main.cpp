@@ -6,42 +6,23 @@
 #include <sys/resource.h>
 #include <thread>
 #include <chrono>
+#include <malloc.h>
 
 using namespace std;
 
 template<typename Function>
 double wallTime(Function func);
 void getMemoryUsage();
-int userInteraction(Graph* graph);
-int caseStudy(Graph* graph);
+int userInteraction();
+int caseStudy();
+double BFSAvgExecutionTime(Graph* graph);
+double DFSAvgExecutionTime(Graph* graph);
+int getVertexParentBFS(Graph* graph, int startVertex, int childVertex);
+int getVertexParentDFS(Graph* graph, int startVertex, int childVertex);
 
 int main() {
-
-    // AdjacencyMatrixGraph graph; // Create graph
-
-    // graph.readGraphFromFile("case-study-graphs/teste_3.txt");
-    // cout << endl; // Jump Line
-
-    // // Pause execution to stabilize memory usage
-    // this_thread::sleep_for(chrono::seconds(5));
-    // struct rusage usage;
-    // if (getrusage(RUSAGE_SELF, &usage) == 0) {
-    //     cout << "Memória usada pelo processo: " << usage.ru_maxrss << " KB" << endl;
-    // } else {
-    //     cerr << "Erro ao obter informações de uso de recursos." << endl;
-    // }
-    // cout << endl; // Jump Line
-
-    // int diameter;
-    // double durationInSeconds = wallTime([&graph, &diameter](){
-    //     diameter = graph.diameter();
-    // });
-    // cout << "Diameter Wall Time: " << durationInSeconds << " seconds." << endl;
-    // cout << "Graph diameter: " << diameter << endl;
-    // cout << endl; // Jump Line
     
     int choice;
-    Graph* graph = nullptr;;
 
     cout << endl << "Graph Library Testing Interface" << endl;
     cout << "-------------------------------" << endl;
@@ -52,15 +33,13 @@ int main() {
     cin >> choice;
 
     if (choice == 1) {
-        userInteraction(graph);
+        userInteraction();
     } else if (choice == 2) {
-        return 0; // building
+        caseStudy();
     } else {
         cout << "Invalid choice." << endl;
         return 1;
     }
-
-    //delete graph;
 
     return 0;
 }
@@ -87,9 +66,10 @@ void getMemoryUsage() {
     }
 }
 
-int userInteraction(Graph* graph) {
+int userInteraction() {
     int choice;
     double duration;
+    Graph* graph;
 
     cout << endl << "Choose the graph representation:" << endl;
     cout << "1. Adjacency Matrix" << endl;
@@ -188,6 +168,7 @@ int userInteraction(Graph* graph) {
                 break;
             }
             case 8: {
+                delete graph;
                 cout << "Execution terminated." << endl;
                 return 0;
             }
@@ -200,7 +181,107 @@ int userInteraction(Graph* graph) {
     return 0;
 } 
 
-int caseStudy(Graph* graph) {
+int caseStudy() {
+    ofstream resultsFile("case_study.csv");
+    string pathGraph;
 
-    ofstream resultsFile("case_study.txt");
+    resultsFile << unitbuf; // Activate real time file writing
+
+    Graph* graph;
+
+    resultsFile << "Graph,MatrixExecTimeBFS,MatrixExecTimeDFS,ListExecTimeBFS,ListExecTimeDFS,Parent10fromBFS,"
+                << "Parent20fromBFS,Parent30fromBFS,Parent10fromDFS,Parent20fromDFS,Parent30fromDFS,"
+                << "NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
+
+    // Perform case study to each graph in folder 'case-study-graphs'
+    for (int test_number = 1; test_number <= 1; ++test_number) {
+
+        // Path of file containing current graph
+        pathGraph = "case-study-graphs/grafo_" + to_string(test_number) + ".txt";
+
+        cout << "Running tests on Graph " << test_number << "..." << endl;
+        resultsFile << test_number << ",";
+
+        cout << "Getting BFS and DFS average execution for both representations..." << endl;
+
+        // Reading graph from file
+        graph = new AdjacencyMatrixGraph();
+        graph->readGraphFromFile(pathGraph);
+
+        // Get average BFS and DFS execution time for Matrix
+        resultsFile << BFSAvgExecutionTime(graph) << "," << DFSAvgExecutionTime(graph) << ",";
+        delete graph;
+
+        this_thread::sleep_for(chrono::seconds(15));
+
+        graph = new AdjacencyListGraph();
+        graph->readGraphFromFile(pathGraph);
+
+        // Get average BFS and DFS execution time for List
+        resultsFile << BFSAvgExecutionTime(graph) << "," << DFSAvgExecutionTime(graph) << ",";
+
+        cout << "Searching for parents..." << endl;
+
+        // Get parents of vertices 10, 20, 30 through BFS and DFS
+        resultsFile << getVertexParentBFS(graph, 1, 10) << "," << getVertexParentBFS(graph, 2, 20) << "," << getVertexParentBFS(graph, 3, 30) << ",";
+        resultsFile << getVertexParentDFS(graph, 1, 10) << "," << getVertexParentDFS(graph, 2, 20) << "," << getVertexParentDFS(graph, 3, 30) << ",";
+
+        cout << "Finding connected components..." << endl;
+
+        // Get connected components information
+        vector<vector<int>> components = graph->findConnectedComponents();
+        resultsFile << components.size() << "," << components.front().size() << "," << components.back().size() << ",";
+
+        cout << "Finding graph diameter..." << endl;
+
+        // Get diameter
+        resultsFile << graph->diameter();
+
+        // Free memory
+        delete graph;
+
+        cout << endl;
+    }
+
+    resultsFile.close();
+
+    return 0;
+}
+
+double BFSAvgExecutionTime(Graph* graph) {
+    double duration, totalDuration = 0;
+
+    for (int i = 1; i <= 100; ++i) {
+        duration = wallTime([&graph, &i](){
+            graph->BFS(i, false);
+        });
+        totalDuration += duration;
+    }
+
+    return totalDuration / 100.0;
+}
+
+double DFSAvgExecutionTime(Graph* graph) {
+    double duration, totalDuration = 0;
+
+    for (int i = 1; i <= 100; ++i) {
+        duration = wallTime([&graph, &i](){
+            graph->DFS(i, false);
+        });
+        totalDuration += duration;
+    }
+
+    return totalDuration / 100.0;
+}
+
+int getVertexParentBFS(Graph* graph, int startVertex, int childVertex) {
+    SearchResult result;
+    result = graph->BFS(startVertex, false);
+    return result.parent[childVertex-1];
+}
+
+int getVertexParentDFS(Graph* graph, int startVertex, int childVertex) {
+    SearchResult result;
+    result = graph->DFS(startVertex, false);
+    return result.parent[childVertex-1];
 }

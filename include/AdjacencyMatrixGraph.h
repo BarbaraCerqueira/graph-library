@@ -13,7 +13,7 @@ private:
 
 public:
     AdjacencyMatrixGraph();
-
+    
     void setGraphSize(int _numVertices) override;
     void addEdge(int source, int destination) override;
     void addVertex();
