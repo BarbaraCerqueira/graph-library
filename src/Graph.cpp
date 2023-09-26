@@ -338,6 +338,10 @@ void Graph::generateGraphInfoFile() {
     outFile.close();
 }
 
+int Graph::getNumVertices() {
+    return numVertices;
+};
+
 void Graph::clear(){
     numVertices = 0;
     numEdges = 0;

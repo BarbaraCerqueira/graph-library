@@ -1,12 +1,13 @@
-#include "Graph.h"
 #include "AdjacencyMatrixGraph.h"
 #include "AdjacencyListGraph.h"
 #include <vector>
 #include <iostream>
 #include <sys/resource.h>
+#include <sys/sysinfo.h>
 #include <thread>
 #include <chrono>
-#include <malloc.h>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -19,6 +20,9 @@ double BFSAvgExecutionTime(Graph* graph);
 double DFSAvgExecutionTime(Graph* graph);
 int getVertexParentBFS(Graph* graph, int startVertex, int childVertex);
 int getVertexParentDFS(Graph* graph, int startVertex, int childVertex);
+int getRandomVertex(int numVertices);
+size_t estimateMatrixMemoryUsage(string filepath);
+size_t getFreeMemory();
 
 int main() {
     
@@ -194,7 +198,7 @@ int caseStudy() {
                 << "NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
 
     // Perform case study to each graph in folder 'case-study-graphs'
-    for (int test_number = 1; test_number <= 1; ++test_number) {
+    for (int test_number = 2; test_number <= 6; ++test_number) {
 
         // Path of file containing current graph
         pathGraph = "case-study-graphs/grafo_" + to_string(test_number) + ".txt";
@@ -202,18 +206,29 @@ int caseStudy() {
         cout << "Running tests on Graph " << test_number << "..." << endl;
         resultsFile << test_number << ",";
 
-        cout << "Getting BFS and DFS average execution for both representations..." << endl;
+        cout << "Getting BFS and DFS average execution for Adjacency Matrix..." << endl;
 
-        // Reading graph from file
-        graph = new AdjacencyMatrixGraph();
-        graph->readGraphFromFile(pathGraph);
+        if (estimateMatrixMemoryUsage(pathGraph) < getFreeMemory()){
+            // Initialize graph as Adjacency Matrix
+            graph = new AdjacencyMatrixGraph();
+            graph->readGraphFromFile(pathGraph);
 
-        // Get average BFS and DFS execution time for Matrix
-        resultsFile << BFSAvgExecutionTime(graph) << "," << DFSAvgExecutionTime(graph) << ",";
-        delete graph;
+            // Get average BFS and DFS execution time for Matrix
+            resultsFile << BFSAvgExecutionTime(graph) << "," << DFSAvgExecutionTime(graph) << ",";
 
-        this_thread::sleep_for(chrono::seconds(15));
+            // Free memory
+            delete graph;
+        }
+        // Not safe to proceed with memory allocation - graph too large
+        else { 
+            // Exception due to excess memory allocation
+            resultsFile << "Memory excess" << ",";
+            cout << "Not possible to allocate Adjacency Matrix!" << endl;
+        }
+            
+        cout << "Getting BFS and DFS average execution for Adjacency List..." << endl;
 
+        // Initialize graph as Adjacency List
         graph = new AdjacencyListGraph();
         graph->readGraphFromFile(pathGraph);
 
@@ -235,7 +250,7 @@ int caseStudy() {
         cout << "Finding graph diameter..." << endl;
 
         // Get diameter
-        resultsFile << graph->diameter();
+        resultsFile << graph->diameter() << endl;
 
         // Free memory
         delete graph;
@@ -252,8 +267,9 @@ double BFSAvgExecutionTime(Graph* graph) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= 100; ++i) {
-        duration = wallTime([&graph, &i](){
-            graph->BFS(i, false);
+        int randomVertex = getRandomVertex(graph->getNumVertices());
+        duration = wallTime([&graph, &randomVertex](){
+            graph->BFS(randomVertex, false);
         });
         totalDuration += duration;
     }
@@ -265,8 +281,9 @@ double DFSAvgExecutionTime(Graph* graph) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= 100; ++i) {
-        duration = wallTime([&graph, &i](){
-            graph->DFS(i, false);
+        int randomVertex = getRandomVertex(graph->getNumVertices());
+        duration = wallTime([&graph, &randomVertex](){
+            graph->DFS(randomVertex, false);
         });
         totalDuration += duration;
     }
@@ -284,4 +301,47 @@ int getVertexParentDFS(Graph* graph, int startVertex, int childVertex) {
     SearchResult result;
     result = graph->DFS(startVertex, false);
     return result.parent[childVertex-1];
+}
+
+int getRandomVertex(int numVertices) {
+    // Initialize random seed with current time
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    // Generate a random number between 1 and numVertices
+    int randomVertex = rand() % numVertices + 1;
+
+    return randomVertex;
+}
+
+// Estimates size of Adjacency Matrix in bytes
+size_t estimateMatrixMemoryUsage(string filepath) {
+    ifstream file(filepath);
+    if (!file.is_open()) {
+        return -1; // Error trying to open file
+    }
+
+    // Reads number of vertices
+    int numVertices;
+    file >> numVertices;
+
+    size_t totalElements = numVertices * numVertices;
+    size_t estimateMemory = totalElements * sizeof(int);
+
+    file.close();
+
+    return estimateMemory;
+}
+
+// Gets amount of currently available memory in system
+size_t getFreeMemory() {
+    struct sysinfo info;
+
+    if (sysinfo(&info) != 0) {
+        cerr << "Error getting system information" << endl;
+        return -1;
+    }
+
+    size_t freeMemory = info.freeram * info.mem_unit;
+
+    return freeMemory;
 }

@@ -46,6 +46,7 @@ public:
     int shortestDistance(int source, int destination);
     int diameter();
     void generateGraphInfoFile();
+    int getNumVertices();
 };
 
 #endif // GRAPH_H
