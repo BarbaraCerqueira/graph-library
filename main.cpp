@@ -197,8 +197,8 @@ int caseStudy() {
                 << "Parent20fromBFS,Parent30fromBFS,Parent10fromDFS,Parent20fromDFS,Parent30fromDFS,"
                 << "NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
 
-    // Perform case study to each graph in folder 'case-study-graphs'
-    for (int test_number = 2; test_number <= 6; ++test_number) {
+    // Perform case study to each graph in folder 'case-study-graphs' - All 6 must be there
+    for (int test_number = 1; test_number <= 6; ++test_number) {
 
         // Path of file containing current graph
         pathGraph = "case-study-graphs/grafo_" + to_string(test_number) + ".txt";
@@ -324,7 +324,9 @@ size_t estimateMatrixMemoryUsage(string filepath) {
     int numVertices;
     file >> numVertices;
 
-    size_t totalElements = numVertices * numVertices;
+    size_t totalElements = static_cast<size_t>(numVertices) * numVertices;
+    cout << "T: " << numVertices << endl;
+    cout << "TxT: " << totalElements << endl;
     size_t estimateMemory = totalElements * sizeof(bool);
 
     file.close();
