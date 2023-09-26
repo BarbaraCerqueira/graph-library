@@ -7,14 +7,14 @@ AdjacencyMatrixGraph::AdjacencyMatrixGraph() : Graph() {
 void AdjacencyMatrixGraph::setGraphSize(int _numVertices) {
     matrix.resize(_numVertices);
     for (int i = 0; i < _numVertices; i++) {
-        matrix[i].resize(_numVertices);
+        matrix[i].resize(_numVertices, false);
     }
 }
 
 void AdjacencyMatrixGraph::addEdge(int source, int destination) {
     if (source > 0 && source <= numVertices && destination > 0 && destination <= numVertices) {
-        matrix[source-1][destination-1] = 1;
-        matrix[destination-1][source-1] = 1;
+        matrix[source-1][destination-1] = true;
+        matrix[destination-1][source-1] = true;
     } else {
         cout << "Invalid vertices!" << endl;
     }
@@ -23,9 +23,9 @@ void AdjacencyMatrixGraph::addEdge(int source, int destination) {
 void AdjacencyMatrixGraph::addVertex() {
     numVertices++;
     // Add a new row and a new column with zeros to the matrix
-    matrix.push_back(vector<int>(numVertices, 0));
+    matrix.push_back(vector<bool>(numVertices, false));
     for (int i = 0; i < numVertices - 1; i++) {
-        matrix[i].push_back(0);
+        matrix[i].push_back(false);
     }
 }
 

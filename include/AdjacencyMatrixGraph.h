@@ -9,7 +9,7 @@ using namespace std;
 
 class AdjacencyMatrixGraph : public Graph {
 private:
-    vector<vector<int>> matrix; 
+    vector<vector<bool>> matrix; 
 
 public:
     AdjacencyMatrixGraph();

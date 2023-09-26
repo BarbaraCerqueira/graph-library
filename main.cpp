@@ -22,7 +22,7 @@ int getVertexParentBFS(Graph* graph, int startVertex, int childVertex);
 int getVertexParentDFS(Graph* graph, int startVertex, int childVertex);
 int getRandomVertex(int numVertices);
 size_t estimateMatrixMemoryUsage(string filepath);
-size_t getFreeMemory();
+size_t getTotalMemory();
 
 int main() {
     
@@ -208,7 +208,7 @@ int caseStudy() {
 
         cout << "Getting BFS and DFS average execution for Adjacency Matrix..." << endl;
 
-        if (estimateMatrixMemoryUsage(pathGraph) < getFreeMemory()){
+        if (estimateMatrixMemoryUsage(pathGraph) < getTotalMemory()){
             // Initialize graph as Adjacency Matrix
             graph = new AdjacencyMatrixGraph();
             graph->readGraphFromFile(pathGraph);
@@ -325,15 +325,15 @@ size_t estimateMatrixMemoryUsage(string filepath) {
     file >> numVertices;
 
     size_t totalElements = numVertices * numVertices;
-    size_t estimateMemory = totalElements * sizeof(int);
+    size_t estimateMemory = totalElements * sizeof(bool);
 
     file.close();
 
     return estimateMemory;
 }
 
-// Gets amount of currently available memory in system
-size_t getFreeMemory() {
+// Gets amount of available memory in system
+size_t getTotalMemory() {
     struct sysinfo info;
 
     if (sysinfo(&info) != 0) {
@@ -341,7 +341,7 @@ size_t getFreeMemory() {
         return -1;
     }
 
-    size_t freeMemory = info.freeram * info.mem_unit;
+    size_t totalMemory = info.totalram * info.mem_unit;
 
-    return freeMemory;
+    return totalMemory;
 }
