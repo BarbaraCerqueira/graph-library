@@ -222,7 +222,7 @@ int caseStudy() {
         // Not safe to proceed with memory allocation - graph too large
         else { 
             // Exception due to excess memory allocation
-            resultsFile << "Memory excess" << ",";
+            resultsFile << "Memory excess" << "Memory excess" << ",";
             cout << "Not possible to allocate Adjacency Matrix!" << endl;
         }
             
@@ -325,8 +325,6 @@ size_t estimateMatrixMemoryUsage(string filepath) {
     file >> numVertices;
 
     size_t totalElements = static_cast<size_t>(numVertices) * numVertices;
-    cout << "T: " << numVertices << endl;
-    cout << "TxT: " << totalElements << endl;
     size_t estimateMemory = totalElements * sizeof(bool);
 
     file.close();
