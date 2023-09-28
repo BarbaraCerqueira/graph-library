@@ -45,8 +45,10 @@ public:
     vector<vector<int>> findConnectedComponents();
     int shortestDistance(int source, int destination);
     int diameter();
+    int estimateDiameter();
     void generateGraphInfoFile();
     int getNumVertices();
+    
 };
 
 #endif // GRAPH_H

@@ -222,7 +222,7 @@ int caseStudy() {
         // Not safe to proceed with memory allocation - graph too large
         else { 
             // Exception due to excess memory allocation
-            resultsFile << "Memory excess" << "Memory excess" << ",";
+            resultsFile << "Memory excess," << "Memory excess,";
             cout << "Not possible to allocate Adjacency Matrix!" << endl;
         }
             
@@ -250,7 +250,14 @@ int caseStudy() {
         cout << "Finding graph diameter..." << endl;
 
         // Get diameter
-        resultsFile << graph->diameter() << endl;
+        if (graph->getNumVertices() < 500000) {
+            resultsFile << graph->diameter() << endl;
+        }
+        // Graph is too large, process will take too long -> just estimate diameter
+        else {           
+            cout << "Graph is too large, diameter to be found next is just an estimate!" << endl;
+            resultsFile << graph->estimateDiameter() << endl;
+        }
 
         // Free memory
         delete graph;

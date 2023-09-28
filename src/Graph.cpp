@@ -252,6 +252,54 @@ int Graph::diameter() {
     return maxDiameter;
 }
 
+int Graph::estimateDiameter() {
+    int maxDiameter = 0;
+    int totalComponentsProcessed = 0; // For progress bar
+
+    vector<vector<int>> components = findConnectedComponents();
+
+    // Run estimate algorithm in each component and get the biggest result
+    for (vector<int> component: components) {
+
+        // Run BFS from an arbitrary vertex to find the farthest reachable node
+        SearchResult firstBFS = BFS(component.front(), false);
+
+        // Find the vertex farthest from the starting vertex
+        int farthestVertex = 1;
+        for (int i = 2; i <= numVertices; ++i) {
+            if (firstBFS.level[i - 1] > firstBFS.level[farthestVertex - 1]) {
+                farthestVertex = i;
+            }
+        }
+
+        // Run BFS from the farthest vertex to find the maximum distance
+        SearchResult secondBFS = BFS(farthestVertex, false);
+
+        // Find the maximum level in the second BFS result
+        int maxLevel = *max_element(secondBFS.level.begin(), secondBFS.level.end());
+
+        // Update the maximum diameter if needed
+        maxDiameter = max(maxDiameter, maxLevel);
+
+        // Update and print the progress bar
+        totalComponentsProcessed++;
+        double progress = static_cast<double>(totalComponentsProcessed) / components.size() * 100;
+
+        cout << "\rProgress: [";
+        int barWidth = 50;
+        int pos = barWidth * progress / 100;
+        for (int i = 0; i < barWidth; ++i) {
+            if (i < pos) cout << "=";
+            else cout << " ";
+        }
+        cout << "] " << int(progress) << "%";
+        cout.flush();
+    }
+
+    return maxDiameter; // Estimate of graph diameter
+}
+
+
 vector<int> Graph::getSortedVertexDegrees(){
     vector<int> degree (numVertices);
 
