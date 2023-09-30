@@ -195,7 +195,7 @@ int caseStudy() {
 
     resultsFile << "Graph,MatrixExecTimeBFS,MatrixExecTimeDFS,ListExecTimeBFS,ListExecTimeDFS,Parent10fromBFS,"
                 << "Parent20fromBFS,Parent30fromBFS,Parent10fromDFS,Parent20fromDFS,Parent30fromDFS,"
-                << "NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
+                << "Dist10to20,Dist10to30,Dist20to30,NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
 
     // Perform case study to each graph in folder 'case-study-graphs' - All 6 must be there
     for (int test_number = 1; test_number <= 6; ++test_number) {
@@ -240,6 +240,11 @@ int caseStudy() {
         // Get parents of vertices 10, 20, 30 through BFS and DFS
         resultsFile << getVertexParentBFS(graph, 1, 10) << "," << getVertexParentBFS(graph, 2, 20) << "," << getVertexParentBFS(graph, 3, 30) << ",";
         resultsFile << getVertexParentDFS(graph, 1, 10) << "," << getVertexParentDFS(graph, 2, 20) << "," << getVertexParentDFS(graph, 3, 30) << ",";
+
+        cout << "Searching for minimum distances..." << endl;
+
+        // Get distance from vertices 10 to 20, 10 to 30 and 20 to 30
+        resultsFile << graph->shortestDistance(10,20) << "," << graph->shortestDistance(10,30) << "," << graph->shortestDistance(20,30) << ",";
 
         cout << "Finding connected components..." << endl;
 

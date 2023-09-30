@@ -1,7 +1,5 @@
 #include "Graph.h"
 
-using namespace std;
-
 Graph::Graph() {
 }
 
@@ -44,7 +42,7 @@ SearchResult Graph::BFS(int startVertex, bool outputToFile) {
     parent[startVertex-1] = 0; // Root has no parent
 
     // Mark the source vertex as visited and enqueue it
-    visited[startVertex] = true;
+    visited[startVertex-1] = true;
     queue.push(startVertex);
 
     while (!queue.empty()) {
@@ -57,8 +55,8 @@ SearchResult Graph::BFS(int startVertex, bool outputToFile) {
         // If an adjacent vertex has not been visited, mark it
         // visited and enqueue it
         for (int adjacentVertex : findNeighbors(currentVertex)) {
-            if (!visited[adjacentVertex]) {
-                visited[adjacentVertex] = true;
+            if (!visited[adjacentVertex-1]) {
+                visited[adjacentVertex-1] = true;
                 queue.push(adjacentVertex);
                 parent[adjacentVertex-1] = currentVertex; 
                 level[adjacentVertex-1] = level[currentVertex-1] + 1; 
