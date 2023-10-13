@@ -1,7 +1,7 @@
 #include "AdjacencyMatrixGraph.h"
 
 
-AdjacencyMatrixGraph::AdjacencyMatrixGraph() : Graph() {
+AdjacencyMatrixGraph::AdjacencyMatrixGraph() : UnweightedGraph() {
 }
 
 void AdjacencyMatrixGraph::setGraphSize(int _numVertices) {
@@ -60,5 +60,6 @@ int AdjacencyMatrixGraph::findDegree(int vertex) {
 
 void AdjacencyMatrixGraph::clear(){
     matrix.clear();
+    UnweightedGraph::clear();
 }
 

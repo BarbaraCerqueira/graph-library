@@ -1,5 +1,6 @@
 #include "AdjacencyMatrixGraph.h"
 #include "AdjacencyListGraph.h"
+#include "WeightedGraph.h"
 #include <vector>
 #include <iostream>
 #include <sys/resource.h>
@@ -16,10 +17,10 @@ double wallTime(Function func);
 void getMemoryUsage();
 int userInteraction();
 int caseStudy();
-double BFSAvgExecutionTime(Graph* graph);
-double DFSAvgExecutionTime(Graph* graph);
-int getVertexParentBFS(Graph* graph, int startVertex, int childVertex);
-int getVertexParentDFS(Graph* graph, int startVertex, int childVertex);
+double BFSAvgExecutionTime(UnweightedGraph* graph);
+double DFSAvgExecutionTime(UnweightedGraph* graph);
+int getVertexParentBFS(UnweightedGraph* graph, int startVertex, int childVertex);
+int getVertexParentDFS(UnweightedGraph* graph, int startVertex, int childVertex);
 int getRandomVertex(int numVertices);
 size_t estimateMatrixMemoryUsage(string filepath);
 size_t getTotalMemory();
@@ -73,7 +74,7 @@ void getMemoryUsage() {
 int userInteraction() {
     int choice;
     double duration;
-    Graph* graph;
+    UnweightedGraph* graph;
 
     cout << endl << "Choose the graph representation:" << endl;
     cout << "1. Adjacency Matrix" << endl;
@@ -191,14 +192,14 @@ int caseStudy() {
 
     resultsFile << unitbuf; // Activate real time file writing
 
-    Graph* graph;
+    UnweightedGraph* graph;
 
     resultsFile << "Graph,MatrixExecTimeBFS,MatrixExecTimeDFS,ListExecTimeBFS,ListExecTimeDFS,Parent10fromBFS,"
                 << "Parent20fromBFS,Parent30fromBFS,Parent10fromDFS,Parent20fromDFS,Parent30fromDFS,"
                 << "Dist10to20,Dist10to30,Dist20to30,NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter" << endl;
 
     // Perform case study to each graph in folder 'case-study-graphs' - All 6 must be there
-    for (int test_number = 1; test_number <= 6; ++test_number) {
+    for (int test_number = 2; test_number <= 6; ++test_number) {
 
         // Path of file containing current graph
         pathGraph = "case-study-graphs/grafo_" + to_string(test_number) + ".txt";
@@ -275,7 +276,7 @@ int caseStudy() {
     return 0;
 }
 
-double BFSAvgExecutionTime(Graph* graph) {
+double BFSAvgExecutionTime(UnweightedGraph* graph) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= 100; ++i) {
@@ -289,7 +290,7 @@ double BFSAvgExecutionTime(Graph* graph) {
     return totalDuration / 100.0;
 }
 
-double DFSAvgExecutionTime(Graph* graph) {
+double DFSAvgExecutionTime(UnweightedGraph* graph) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= 100; ++i) {
@@ -303,13 +304,13 @@ double DFSAvgExecutionTime(Graph* graph) {
     return totalDuration / 100.0;
 }
 
-int getVertexParentBFS(Graph* graph, int startVertex, int childVertex) {
+int getVertexParentBFS(UnweightedGraph* graph, int startVertex, int childVertex) {
     SearchResult result;
     result = graph->BFS(startVertex, false);
     return result.parent[childVertex-1];
 }
 
-int getVertexParentDFS(Graph* graph, int startVertex, int childVertex) {
+int getVertexParentDFS(UnweightedGraph* graph, int startVertex, int childVertex) {
     SearchResult result;
     result = graph->DFS(startVertex, false);
     return result.parent[childVertex-1];

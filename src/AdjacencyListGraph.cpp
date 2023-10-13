@@ -1,7 +1,7 @@
 #include "AdjacencyListGraph.h"
 
 
-AdjacencyListGraph::AdjacencyListGraph() : Graph() {
+AdjacencyListGraph::AdjacencyListGraph() : UnweightedGraph() {
 }
 
 void AdjacencyListGraph::setGraphSize(int _numVertices) {
@@ -45,6 +45,7 @@ int AdjacencyListGraph::findDegree(int vertex) {
 
 void AdjacencyListGraph::clear() {
     adjacencyList.clear();
+    UnweightedGraph::clear();
 }
 
 

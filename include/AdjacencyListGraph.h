@@ -1,13 +1,13 @@
 #ifndef ADJACENCY_LIST_GRAPH_H
 #define ADJACENCY_LIST_GRAPH_H
 
-#include "Graph.h"
+#include "UnweightedGraph.h"
 #include <vector>
 #include <list>
 
 using namespace std;
 
-class AdjacencyListGraph : public Graph {
+class AdjacencyListGraph : public UnweightedGraph {
 private:
     vector<list<int>> adjacencyList;
 

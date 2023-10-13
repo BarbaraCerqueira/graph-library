@@ -1,13 +1,13 @@
 #ifndef ADJACENCY_MATRIX_GRAPH_H
 #define ADJACENCY_MATRIX_GRAPH_H
 
-#include "Graph.h"
+#include "UnweightedGraph.h"
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
-class AdjacencyMatrixGraph : public Graph {
+class AdjacencyMatrixGraph : public UnweightedGraph {
 private:
     vector<vector<bool>> matrix; 
 
