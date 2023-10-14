@@ -1,7 +1,0 @@
-Graph,MatrixExecTimeBFS,MatrixExecTimeDFS,ListExecTimeBFS,ListExecTimeDFS,Parent10fromBFS,Parent20fromBFS,Parent30fromBFS,Parent10fromDFS,Parent20fromDFS,Parent30fromDFS,Dist10to20,Dist10to30,Dist20to30,NumConnectedComponents,BiggestComponent,SmallestComponent,Diameter
-1,0.0883942,0.936555,0.00561176,0.0476824,2042,7541,5783,3075,9429,6071,3,3,4,1,10000,10000,5
-2,0.332485,16.3113,0.0418403,0.00385942,-1,-1,18855,-1,-1,32621,-1,-1,3,10,25000,48,20
-3,Memory excess,Memory excess,0.0409709,0.0897216,-1,75471,-1,-1,141526,-1,9,-1,-1,2,250000,125000,22
-4,Memory excess,Memory excess,0.856028,17.9527,194465,-1,-1,272292,-1,-1,4,3,4,2,250000,125000,5
-5,Memory excess,Memory excess,0.843872,1.8637,1888350,-1,191713,905955,-1,2502539,-1,9,-1,5,2500000,156250,58
-6,Memory excess,Memory excess,5.34568,54.8734,-1,4095628,-1,-1,623747,-1,5,5,5,5,2500000,156250,19

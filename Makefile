@@ -2,45 +2,48 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -Wno-unused-parameter -g -fopenmp -O3 
 INC_DIR = include
 SRC_DIR = src
+TEST_DIR = test
 BUILD_DIR = build
 BIN_DIR = bin
 
-# Encontre todos os arquivos .cpp em src e suas subpastas
-SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
+# Find all the .cpp files in src, test, and their subdirectories
+SRC_FILES := $(shell find $(SRC_DIR) $(TEST_DIR) -type f -name '*.cpp')
 
-# Gere a lista de objetos correspondentes
-OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
+# Generate the list of corresponding object files
+OBJ_FILES := $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(SRC_FILES)))
 
-# Nome do executável
+# Add main.cpp to the list of source files
+SRC_FILES += test/main.cpp
+
+# Name of the executable
 EXECUTABLE = $(BIN_DIR)/main
 
-# Regra principal para construir o executável
+# Main rule to build the executable
 all: $(EXECUTABLE)
 
-# Regra para criar diretórios de compilação e binários, se necessário
+# Rule to create build and bin directories if necessary
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Regra para compilar cada arquivo .cpp em um arquivo .o
+# Rule to compile each .cpp file into a .o file
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c $< -o $@
 
-# Adicione seu main.cpp como dependência aqui
-$(BUILD_DIR)/main.o: main.cpp | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c $< -o $@
 
-# Regra para construir o executável usando os objetos
-$(EXECUTABLE): $(OBJ_FILES) $(BUILD_DIR)/main.o | $(BIN_DIR)
+# Rule to build the executable using the object files
+$(EXECUTABLE): $(OBJ_FILES) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Regra para limpar os arquivos intermediários e o executável
+# Rule to clean the intermediate files and the executable
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 
-# Regra para rodar o programa
+# Rule to run the program
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
 
