@@ -17,6 +17,8 @@ double wallTime(Function func);
 void getMemoryUsage();
 int userInteraction();
 int caseStudy();
+int WeightedGraphInteraction();
+int UnweightedGraphInteraction();
 double BFSAvgExecutionTime(UnweightedGraph* graph);
 double DFSAvgExecutionTime(UnweightedGraph* graph);
 int getVertexParentBFS(UnweightedGraph* graph, int startVertex, int childVertex);
@@ -73,8 +75,66 @@ void getMemoryUsage() {
 
 int userInteraction() {
     int choice;
-    double duration;
+
+    cout << endl << "Choose the type of graph:" << endl;
+    cout << "1. Weighted Graph" << endl;
+    cout << "2. Unweighted Graph" << endl;
+    cin >> choice;
+
+    if (choice == 1) {;
+        WeightedGraphInteraction();
+    } else if (choice == 2) {
+        UnweightedGraphInteraction();
+    } else {
+        cout << "Invalid choice." << endl;
+        return 1;
+    }
+
+    return 0;
+} 
+
+int WeightedGraphInteraction() {
+    WeightedGraph* graph = new WeightedGraph();
+
+    string filepath;
+    cout << endl << "Enter the path to the graph file: ";
+    cin >> filepath;
+
+    if (!graph->readGraphFromFile(filepath)) {
+        cout << "Error reading the graph file." << endl;
+        delete graph;
+    }
+
+    int choice;
+    while (true) {
+        cout << endl << "Choose an operation:" << endl;
+        cout << "1. Check Memory Usage" << endl;
+        cout << "2. Quit" << endl;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                getMemoryUsage();
+                break;
+            }
+            case 2: {
+                delete graph;
+                cout << "Execution terminated." << endl;
+                return 0;
+            }
+            default: {
+                cout << "Invalid choice." << endl;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int UnweightedGraphInteraction() {
     UnweightedGraph* graph;
+    int choice;
+    double duration;
 
     cout << endl << "Choose the graph representation:" << endl;
     cout << "1. Adjacency Matrix" << endl;
@@ -184,7 +244,7 @@ int userInteraction() {
     }
 
     return 0;
-} 
+}
 
 int caseStudy() {
     ofstream resultsFile("case_study.csv");
