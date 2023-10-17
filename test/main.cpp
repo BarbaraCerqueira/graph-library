@@ -15,25 +15,30 @@ int WeightedGraphInteraction();
 int UnweightedGraphInteraction();
 
 int main() {
+
+    WeightedGraph* graph = new WeightedGraph();
+    graph->readGraphFromFile("case-study-graphs/teste_2.txt");
+    int n = graph->getDegree(1);
+    cout << "Grau do vertice 1: " << n << endl;
     
-    int choice;
+    // int choice;
 
-    cout << endl << "Graph Library Testing Interface" << endl;
-    cout << "-------------------------------" << endl;
+    // cout << endl << "Graph Library Testing Interface" << endl;
+    // cout << "-------------------------------" << endl;
 
-    cout << endl << "Choose mode:" << endl;
-    cout << "1. User Interaction" << endl;
-    cout << "2. Run Case Study" << endl;
-    cin >> choice;
+    // cout << endl << "Choose mode:" << endl;
+    // cout << "1. User Interaction" << endl;
+    // cout << "2. Run Case Study" << endl;
+    // cin >> choice;
 
-    if (choice == 1) {
-        userInteraction();
-    } else if (choice == 2) {
-        caseStudy();
-    } else {
-        cout << "Invalid choice." << endl;
-        return 1;
-    }
+    // if (choice == 1) {
+    //     userInteraction();
+    // } else if (choice == 2) {
+    //     caseStudy();
+    // } else {
+    //     cout << "Invalid choice." << endl;
+    //     return 1;
+    // }
 
     return 0;
 }

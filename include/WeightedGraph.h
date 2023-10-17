@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <vector>
-#include <algorithm>
+#include <list>
 
 using namespace std;
 
@@ -12,13 +12,17 @@ public:
     WeightedGraph();
 
     bool readGraphFromFile(string filepath);
-    void addEdge(int from, int to, int weight);
+    void addEdge(int source, int destination, int weight);
+    void addVertex();
+    list<pair<int, int>> findNeighbors(int vertex);
+    int getDegree(int vertex);
     void clear();
 
 private:
     int numVertices = 0; 
     int numEdges = 0;
-    vector<vector<pair<int, int>>> adjacencyList;
+    vector<list<pair<int, int>>> adjacencyList;
 };
 
 #endif // WEIGHTED_GRAPH_H
+
