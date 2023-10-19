@@ -18,7 +18,7 @@ int main() {
 
     WeightedGraph* graph = new WeightedGraph();
     graph->readGraphFromFile("case-study-graphs/teste_2.txt");
-    int n = graph->getDegree(1);
+    int n = graph->findDegree(1);
     cout << "Grau do vertice 1: " << n << endl;
     
     // int choice;

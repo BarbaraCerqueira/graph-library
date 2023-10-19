@@ -1,9 +1,12 @@
 #ifndef WEIGHTED_GRAPH_H
 #define WEIGHTED_GRAPH_H
 
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <list>
+#include <set>
+#include <climits>
 
 using namespace std;
 
@@ -14,8 +17,9 @@ public:
     bool readGraphFromFile(string filepath);
     void addEdge(int source, int destination, int weight);
     void addVertex();
-    list<pair<int, int>> findNeighbors(int vertex);
-    int getDegree(int vertex);
+    vector<pair<int, int>> findNeighbors(int vertex);
+    int findDegree(int vertex);
+    vector<pair<int, int>> dijkstra(int source);
     void clear();
 
 private:
