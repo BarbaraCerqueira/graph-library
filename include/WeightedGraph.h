@@ -10,6 +10,13 @@
 
 using namespace std;
 
+// Struct to store the result of Dijkstra search
+struct SearchResult {
+    vector<bool> visited;
+    vector<int> parent;
+    vector<int> distance;
+};
+
 class WeightedGraph {
 public:
     WeightedGraph();
@@ -17,9 +24,10 @@ public:
     bool readGraphFromFile(string filepath);
     void addEdge(int source, int destination, int weight);
     void addVertex();
-    vector<pair<int, int>> findNeighbors(int vertex);
+    list<pair<int, int>> findNeighbors(int vertex);
     int findDegree(int vertex);
-    vector<pair<int, int>> dijkstra(int source);
+    SearchResult dijkstraVector(int source, int destination);
+    SearchResult dijkstraHeap(int source, int destination);
     void clear();
 
 private:
