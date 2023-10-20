@@ -74,11 +74,9 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
         int minVertex = -1;
 
         // Getting vertex with minimum distance from source
-        for (int v = 1; v <= numVertices; v++) {
-            if (!visited[v - 1] and (minVertex == -1 or distance[v - 1] < distance[minVertex - 1])) {
+        for (int v = 1; v <= numVertices; v++)
+            if (!visited[v - 1] and (minVertex == -1 or distance[v - 1] < distance[minVertex - 1])) 
                 minVertex = v;
-            }
-        }
 
         if ((minVertex == destination) or // Min distance/path of destination vertex is found
             (distance[minVertex-1] == INT_MAX)) break; // No more reachable nodes
@@ -97,7 +95,6 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
         }
     }
 
-    result.visited = visited;
     result.distance = distance;
     result.parent = parent;
     
@@ -110,21 +107,73 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
 DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
     DijkstraResult result;
 
+    // Create a Fibonacci Heap and initialize distances and parent arrays
+    FibonacciHeap heap;
+    vector<int> distance(numVertices, INT_MAX);
+    vector<int> parent(numVertices, -1);
+
+    // Hash Map to maintain references to nodes in the Fibonacci heap
+    unordered_map<int, Node*> nodeMap;  
+
+    // Insert all vertices into the heap with infinite distance
+    for (int vertex=1; vertex <= numVertices; vertex++){
+        nodeMap[vertex] = heap.insert(INT_MAX, vertex);
+    }
+
+    // Update distance of the source vertex to 0
+    distance[source - 1] = 0;
+    heap.decreaseKey(nodeMap[source], 0);
+
+    // Continue until the heap is empty or destination is reached
+    while (!heap.isEmpty()) {
+        Node* minNode = heap.getMin();
+        int minVertex = minNode->value;
+        heap.deleteMin();
+
+        // If destination is reached, break out of the loop
+        if (minVertex == destination) break;
+
+        // Exploring neighbors of the current vertex
+        for (pair<int, int> neighbor : findNeighbors(minVertex)) {
+            int neighborVertex = neighbor.first;
+            int neighborWeight = neighbor.second;
+
+            int newDistance = distance[minVertex - 1] + neighborWeight;
+
+            if (newDistance < distance[neighborVertex - 1]) {
+                // Found a shorter path to neighbor
+                distance[neighborVertex - 1] = newDistance;
+                parent[neighborVertex - 1] = minVertex;
+
+                // Updated distance in the heap
+                heap.decreaseKey(nodeMap[neighborVertex], newDistance);
+            }
+        }
+    }
+
+    result.distance = distance;
+    result.parent = parent;
+
     return result;
 }
 
 /*  Returns a pair (first, second):
     first: shortest distance (weight) between source and destination
     second: shortest path (sequence of vertices) between source and destination, including both */
-pair<int, list<int>> WeightedGraph::shortestPath(int source, int destination) {
-    DijkstraResult dijkstra = dijkstraVector(source, destination);
-    int distance = dijkstra.distance[destination-1];
+pair<int, list<int>> WeightedGraph::shortestPath(int source, int destination, bool heap) {
+    DijkstraResult search;
+    if (heap)
+        search = dijkstraHeap(source, destination);
+    else
+        search = dijkstraVector(source, destination);
+
+    int distance = search.distance[destination-1];
 
     list<int> path;
     int vertex = destination;
     while (vertex != source){
         path.push_front(vertex);
-        vertex = dijkstra.parent[vertex - 1];
+        vertex = search.parent[vertex - 1];
     }
     path.push_front(source);
 

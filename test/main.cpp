@@ -18,17 +18,26 @@ int main() {
 
     WeightedGraph* graph = new WeightedGraph();
     graph->readGraphFromFile("case-study-graphs/teste_2.txt");
-    int n = graph->findDegree(6);
-    cout << "Grau do vertice 6: " << n << endl;
-    pair<int, list<int>> pathInfo;
-    DijkstraResult result = graph->dijkstraVector(1);
+    
+    int n = graph->findDegree(8);
+    cout << "Degree of vertex 8: " << n << endl;
 
-    pathInfo = graph->shortestPath(1,8);
-    cout << "Path between 1 and 4, distance is " << pathInfo.first << " and path is ";
-    for (int vertex : pathInfo.second) {
-        cout << vertex << "-";
+    pair<int, list<int>> pathInfo1, pathInfo2;
+
+    pathInfo1 = graph->shortestPath(1,8,false);
+    cout << "Without Heap: Path between 1 and 8, distance is " << pathInfo1.first << " and path is ";
+    for (int vertex : pathInfo1.second) {
+        cout << vertex << " ";
     }
     cout << endl;
+
+    pathInfo2 = graph->shortestPath(1,8,true);
+    cout << "With Heap: Path between 1 and 8, distance is " << pathInfo2.first << " and path is ";
+    for (int vertex : pathInfo2.second) {
+        cout << vertex << " ";
+    }
+    cout << endl;
+
     delete graph;
     
     // int choice;

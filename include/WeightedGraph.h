@@ -1,18 +1,18 @@
 #ifndef WEIGHTED_GRAPH_H
 #define WEIGHTED_GRAPH_H
 
+#include "FibonacciHeap.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <list>
-#include <set>
 #include <climits>
+#include <unordered_map>
 
 using namespace std;
 
 // Struct to store the result of Dijkstra search
 struct DijkstraResult {
-    vector<bool> visited;
     vector<int> parent;
     vector<int> distance;
 };
@@ -28,7 +28,7 @@ public:
     int findDegree(int vertex);
     DijkstraResult dijkstraVector(int source, int destination = INT_MAX);
     DijkstraResult dijkstraHeap(int source, int destination = INT_MAX);
-    pair<int, list<int>> shortestPath(int source, int destination);
+    pair<int, list<int>> shortestPath(int source, int destination, bool heap = true);
     void clear();
 
 private:
