@@ -11,7 +11,7 @@
 using namespace std;
 
 // Struct to store the result of Dijkstra search
-struct SearchResult {
+struct DijkstraResult {
     vector<bool> visited;
     vector<int> parent;
     vector<int> distance;
@@ -26,8 +26,9 @@ public:
     void addVertex();
     list<pair<int, int>> findNeighbors(int vertex);
     int findDegree(int vertex);
-    SearchResult dijkstraVector(int source, int destination);
-    SearchResult dijkstraHeap(int source, int destination);
+    DijkstraResult dijkstraVector(int source, int destination = INT_MAX);
+    DijkstraResult dijkstraHeap(int source, int destination = INT_MAX);
+    pair<int, list<int>> shortestPath(int source, int destination);
     void clear();
 
 private:

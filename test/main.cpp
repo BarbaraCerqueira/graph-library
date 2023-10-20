@@ -18,8 +18,18 @@ int main() {
 
     WeightedGraph* graph = new WeightedGraph();
     graph->readGraphFromFile("case-study-graphs/teste_2.txt");
-    int n = graph->findDegree(1);
-    cout << "Grau do vertice 1: " << n << endl;
+    int n = graph->findDegree(6);
+    cout << "Grau do vertice 6: " << n << endl;
+    pair<int, list<int>> pathInfo;
+    DijkstraResult result = graph->dijkstraVector(1);
+
+    pathInfo = graph->shortestPath(1,8);
+    cout << "Path between 1 and 4, distance is " << pathInfo.first << " and path is ";
+    for (int vertex : pathInfo.second) {
+        cout << vertex << "-";
+    }
+    cout << endl;
+    delete graph;
     
     // int choice;
 
