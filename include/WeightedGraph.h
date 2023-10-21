@@ -34,6 +34,7 @@ public:
 private:
     int numVertices = 0; 
     int numEdges = 0;
+    bool negativeWeight = false;
     vector<list<pair<int, int>>> adjacencyList;
 };
 

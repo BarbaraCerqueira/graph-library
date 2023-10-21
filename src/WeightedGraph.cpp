@@ -17,6 +17,7 @@ bool WeightedGraph::readGraphFromFile(string filepath) {
 
     int source, destination, weight;
     while (file >> source >> destination >> weight) {
+        if (weight < 0) negativeWeight = true;
         addEdge(source, destination, weight);
     }
 
@@ -161,6 +162,11 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
     first: shortest distance (weight) between source and destination
     second: shortest path (sequence of vertices) between source and destination, including both */
 pair<int, list<int>> WeightedGraph::shortestPath(int source, int destination, bool heap) {
+    if (negativeWeight){
+        cout << "Not possible to find shortest path with negative weights yet!" << endl;
+        return pair<int, list<int>>();
+    }
+
     DijkstraResult search;
     if (heap)
         search = dijkstraHeap(source, destination);
