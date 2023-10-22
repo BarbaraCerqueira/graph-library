@@ -11,10 +11,12 @@
 
 using namespace std;
 
+#define INFINITY_FLOAT numeric_limits<float>::max()
+
 // Struct to store the result of Dijkstra search
 struct DijkstraResult {
     vector<int> parent;
-    vector<int> distance;
+    vector<float> distance;
 };
 
 class WeightedGraph {
@@ -22,20 +24,20 @@ public:
     WeightedGraph();
 
     bool readGraphFromFile(string filepath);
-    void addEdge(int source, int destination, int weight);
+    void addEdge(int source, int destination, float weight);
     void addVertex();
-    list<pair<int, int>> findNeighbors(int vertex);
+    list<pair<int, float>> findNeighbors(int vertex);
     int findDegree(int vertex);
-    DijkstraResult dijkstraVector(int source, int destination = INT_MAX);
-    DijkstraResult dijkstraHeap(int source, int destination = INT_MAX);
-    pair<int, list<int>> shortestPath(int source, int destination, bool heap = true);
+    DijkstraResult dijkstraVector(int source, int destination = -1);
+    DijkstraResult dijkstraHeap(int source, int destination = -1);
+    pair<float, list<int>> shortestPath(int source, int destination, bool heap = true);
     void clear();
 
 private:
     int numVertices = 0; 
     int numEdges = 0;
     bool negativeWeight = false;
-    vector<list<pair<int, int>>> adjacencyList;
+    vector<list<pair<int, float>>> adjacencyList;
 };
 
 #endif // WEIGHTED_GRAPH_H

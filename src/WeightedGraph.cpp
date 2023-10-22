@@ -15,7 +15,8 @@ bool WeightedGraph::readGraphFromFile(string filepath) {
     file >> numVertices;
     adjacencyList.resize(numVertices);
 
-    int source, destination, weight;
+    int source, destination;
+    float weight;
     while (file >> source >> destination >> weight) {
         if (weight < 0) negativeWeight = true;
         addEdge(source, destination, weight);
@@ -25,7 +26,7 @@ bool WeightedGraph::readGraphFromFile(string filepath) {
     return true; // Graph read succesfully
 }
 
-void WeightedGraph::addEdge(int source, int destination, int weight) {
+void WeightedGraph::addEdge(int source, int destination, float weight) {
     // Undirected graph, so edge is bidirectional
     adjacencyList[source-1].push_back(make_pair(destination, weight));
     adjacencyList[destination-1].push_back(make_pair(source, weight));
@@ -33,17 +34,17 @@ void WeightedGraph::addEdge(int source, int destination, int weight) {
 }
 
 void WeightedGraph::addVertex() {
-    adjacencyList.push_back(list<pair<int, int>>());
+    adjacencyList.push_back(list<pair<int, float>>());
     numVertices++;
 }
 
 // Return a list of neighbors with their respective weights
-list<pair<int, int>> WeightedGraph::findNeighbors(int vertex) {
+list<pair<int, float>> WeightedGraph::findNeighbors(int vertex) {
     if (vertex > 0 && vertex <= numVertices) {
         return adjacencyList[vertex-1];
     } else {
         cout << "Invalid vertex!" << endl;
-        return list<pair<int, int>>();
+        return list<pair<int, float>>();
     }
 
 }
@@ -63,7 +64,7 @@ int WeightedGraph::findDegree(int vertex) {
 DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
     DijkstraResult result;
 
-    vector<int> distance(numVertices, INT_MAX); // Initializing all distances as 'infinite'
+    vector<float> distance(numVertices, INFINITY_FLOAT); // Initializing all distances as 'infinite'
     vector<int> parent(numVertices, -1);
     vector<bool> visited(numVertices, false);
     
@@ -79,14 +80,15 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
             if (!visited[v - 1] and (minVertex == -1 or distance[v - 1] < distance[minVertex - 1])) 
                 minVertex = v;
 
-        if ((minVertex == destination) or // Min distance/path of destination vertex is found
-            (distance[minVertex-1] == INT_MAX)) break; // No more reachable nodes
+        cout << "Exploring vertex " << minVertex << endl;
+        if ((minVertex == destination) or // Min path of destination vertex is found
+            (distance[minVertex-1] == INFINITY_FLOAT)) break; // No more reachable nodes
         
         visited[minVertex-1] = true; // Vertex is explored
 
-        for (pair<int, int> neighbor : findNeighbors(minVertex)) {
+        for (pair<int, float> neighbor : findNeighbors(minVertex)) {
             int neighborVertex = neighbor.first;
-            int neighborWeight = neighbor.second;
+            float neighborWeight = neighbor.second;
             
             if (distance[minVertex - 1] + neighborWeight < distance[neighborVertex - 1]) {
                 // Found a shorter path to neighbor
@@ -110,15 +112,15 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 
     // Create a Fibonacci Heap and initialize distances and parent arrays
     FibonacciHeap heap;
-    vector<int> distance(numVertices, INT_MAX);
+    vector<float> distance(numVertices, INFINITY_FLOAT);
     vector<int> parent(numVertices, -1);
 
     // Hash Map to maintain references to nodes in the Fibonacci heap
-    unordered_map<int, Node*> nodeMap;  
+    unordered_map<int, Node*> nodeMap;
 
     // Insert all vertices into the heap with infinite distance
     for (int vertex=1; vertex <= numVertices; vertex++){
-        nodeMap[vertex] = heap.insert(INT_MAX, vertex);
+        nodeMap[vertex] = heap.insert(INFINITY_FLOAT, vertex);
     }
 
     // Update distance of the source vertex to 0
@@ -127,19 +129,23 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 
     // Continue until the heap is empty or destination is reached
     while (!heap.isEmpty()) {
-        Node* minNode = heap.getMin();
-        int minVertex = minNode->value;
-        heap.deleteMin();
+        //cout << "Hi! Heap Size is " << heap.size << "!" << endl;
 
-        // If destination is reached, break out of the loop
-        if (minVertex == destination) break;
+        Node* minNode = heap.extractMin(); // Remove explored vertex from heap
+        int minVertex = minNode->value;
+        float minWeight = minNode->key;
+
+        cout << "Exploring vertex " << minVertex << endl;
+
+        if ((minVertex == destination) or // Min path of destination vertex is found
+            (minWeight == INFINITY_FLOAT)) break; // No more reachable nodes
 
         // Exploring neighbors of the current vertex
-        for (pair<int, int> neighbor : findNeighbors(minVertex)) {
+        for (pair<int, float> neighbor : findNeighbors(minVertex)) {
             int neighborVertex = neighbor.first;
-            int neighborWeight = neighbor.second;
+            float neighborWeight = neighbor.second;
 
-            int newDistance = distance[minVertex - 1] + neighborWeight;
+            float newDistance = distance[minVertex - 1] + neighborWeight;
 
             if (newDistance < distance[neighborVertex - 1]) {
                 // Found a shorter path to neighbor
@@ -161,19 +167,22 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 /*  Returns a pair (first, second):
     first: shortest distance (weight) between source and destination
     second: shortest path (sequence of vertices) between source and destination, including both */
-pair<int, list<int>> WeightedGraph::shortestPath(int source, int destination, bool heap) {
+pair<float, list<int>> WeightedGraph::shortestPath(int source, int destination, bool heap) {
     if (negativeWeight){
         cout << "Not possible to find shortest path with negative weights yet!" << endl;
-        return pair<int, list<int>>();
+        return pair<float, list<int>>();
     }
 
     DijkstraResult search;
-    if (heap)
+    if (heap) {
         search = dijkstraHeap(source, destination);
+    }
     else
         search = dijkstraVector(source, destination);
 
-    int distance = search.distance[destination-1];
+    float distance = search.distance[destination-1];
+    if (distance == INFINITY_FLOAT)
+        return {distance, list<int>()};
 
     list<int> path;
     int vertex = destination;

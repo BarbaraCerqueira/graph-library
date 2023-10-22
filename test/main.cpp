@@ -16,48 +16,48 @@ int UnweightedGraphInteraction();
 
 int main() {
 
-    WeightedGraph* graph = new WeightedGraph();
-    graph->readGraphFromFile("case-study-graphs/teste_2.txt");
+    // WeightedGraph* graph = new WeightedGraph();
+    // graph->readGraphFromFile("case-study-graphs/teste_2.txt");
     
-    int n = graph->findDegree(8);
-    cout << "Degree of vertex 8: " << n << endl;
+    // int n = graph->findDegree(8);
+    // cout << "Degree of vertex 8: " << n << endl;
 
-    pair<int, list<int>> pathInfo1, pathInfo2;
+    // pair<int, list<int>> pathInfo1, pathInfo2;
 
-    pathInfo1 = graph->shortestPath(1,8,false);
-    cout << "Without Heap: Path between 1 and 8, distance is " << pathInfo1.first << " and path is ";
-    for (int vertex : pathInfo1.second) {
-        cout << vertex << " ";
-    }
-    cout << endl;
-
-    pathInfo2 = graph->shortestPath(1,8,true);
-    cout << "With Heap: Path between 1 and 8, distance is " << pathInfo2.first << " and path is ";
-    for (int vertex : pathInfo2.second) {
-        cout << vertex << " ";
-    }
-    cout << endl;
-
-    delete graph;
-    
-    // int choice;
-
-    // cout << endl << "Graph Library Testing Interface" << endl;
-    // cout << "-------------------------------" << endl;
-
-    // cout << endl << "Choose mode:" << endl;
-    // cout << "1. User Interaction" << endl;
-    // cout << "2. Run Case Study" << endl;
-    // cin >> choice;
-
-    // if (choice == 1) {
-    //     userInteraction();
-    // } else if (choice == 2) {
-    //     caseStudy();
-    // } else {
-    //     cout << "Invalid choice." << endl;
-    //     return 1;
+    // pathInfo1 = graph->shortestPath(1,8,false);
+    // cout << "Without Heap: Path between 1 and 8, distance is " << pathInfo1.first << " and path is ";
+    // for (int vertex : pathInfo1.second) {
+    //     cout << vertex << " ";
     // }
+    // cout << endl;
+
+    // pathInfo2 = graph->shortestPath(1,8,true);
+    // cout << "With Heap: Path between 1 and 8, distance is " << pathInfo2.first << " and path is ";
+    // for (int vertex : pathInfo2.second) {
+    //     cout << vertex << " ";
+    // }
+    // cout << endl;
+
+    // delete graph;
+    
+    int choice;
+
+    cout << endl << "Graph Library Testing Interface" << endl;
+    cout << "-------------------------------" << endl;
+
+    cout << endl << "Choose mode:" << endl;
+    cout << "1. User Interaction" << endl;
+    cout << "2. Run Case Study" << endl;
+    cin >> choice;
+
+    if (choice == 1) {
+        userInteraction();
+    } else if (choice == 2) {
+        caseStudy();
+    } else {
+        cout << "Invalid choice." << endl;
+        return 1;
+    }
 
     return 0;
 }
@@ -97,16 +97,71 @@ int WeightedGraphInteraction() {
     int choice;
     while (true) {
         cout << endl << "Choose an operation:" << endl;
-        cout << "1. Check Memory Usage" << endl;
-        cout << "2. Quit" << endl;
+        cout << "1. Get Shortest Path (With Heap)" << endl;
+        cout << "2. Get Shortest Path (Without Heap)" << endl;
+        cout << "3. Quit" << endl;
         cin >> choice;
 
         switch (choice) {
             case 1: {
-                getMemoryUsage();
+                int source, destination;
+                pair<float, list<int>> result;
+
+                cout << "Enter source and destination vertices: ";
+                cin >> source >> destination;
+
+                //teste
+                graph->dijkstraHeap(source);
+                break;
+
+                double duration = wallTime([&graph, &result, &source, &destination](){
+                    result = graph->shortestPath(source, destination, true);
+                });
+
+                if (result.first == INFINITY_FLOAT){
+                    cout << "There is no path between those vertices." << endl;
+                    break;
+                }
+
+                cout << "Distance: " << result.first << endl;
+                cout << "Shortest Path: ";
+                for (int vertex : result.second) {
+                    cout << vertex << " ";
+                }
+                cout << endl;
+                cout << "Execution finished after " << duration << " seconds." << endl;
                 break;
             }
             case 2: {
+                int source, destination;
+                pair<float, list<int>> result;
+
+                cout << "Enter source and destination vertices: ";
+                cin >> source >> destination;
+
+                //teste
+                graph->dijkstraVector(source);
+                break;
+
+                double duration = wallTime([&graph, &result, &source, &destination](){
+                    result = graph->shortestPath(source, destination, false);
+                });
+
+                if (result.first == INFINITY_FLOAT){
+                    cout << "There is no path between those vertices." << endl;
+                    break;
+                }
+
+                cout << "Distance: " << result.first << endl;
+                cout << "Shortest Path: ";
+                for (int vertex : result.second) {
+                    cout << vertex << " ";
+                }
+                cout << endl;
+                cout << "Execution finished after " << duration << " seconds." << endl;
+                break;
+            }
+            case 3: {
                 delete graph;
                 cout << "Execution terminated." << endl;
                 return 0;

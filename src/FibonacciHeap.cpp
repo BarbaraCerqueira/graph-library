@@ -1,184 +1,180 @@
 #include "FibonacciHeap.h"
 
-Node::Node(int _key, int _value) {
-    key = _key;
-    value = _value;
-}
-
 FibonacciHeap::FibonacciHeap() {
-    minNode = nullptr;
-    size = 0;
 }
 
-Node* FibonacciHeap::insert(int key, int value) {
-    Node* newNode = new Node(key, value);
+bool FibonacciHeap::isEmpty() {
+    return minNode == nullptr;
+}
+
+Node* FibonacciHeap::insert(float key, int value) {
+    Node* newNode = new Node;
+    newNode->key = key;
+    newNode->value = value;
+    newNode->degree = 0;
+    newNode->marked = false;
+    newNode->parent = nullptr;
+    newNode->child = nullptr;
     if (minNode == nullptr) {
+        newNode->left = newNode;
+        newNode->right = newNode;
         minNode = newNode;
     } else {
-        minNode->left->right = newNode;
-        newNode->left = minNode->left;
-        minNode->left = newNode;
-        newNode->right = minNode;
+        newNode->left = minNode;
+        newNode->right = minNode->right;
+        minNode->right = newNode;
+        newNode->right->left = newNode;
         if (key < minNode->key) {
             minNode = newNode;
         }
     }
-    size++;
+    numNodes++;
     return newNode;
-}
-
-void FibonacciHeap::decreaseKey(Node* node, int newKey) {
-    if (newKey > node->key) {
-        std::cerr << "New key is greater than the current key." << std::endl;
-        return;
-    }
-
-    node->key = newKey;
-    Node* parent = node->parent;
-
-    if (parent != nullptr && node->key < parent->key) {
-        cut(node, parent);
-        cascadingCut(parent);
-    }
-
-    if (node->key < minNode->key) {
-        minNode = node;
-    }
 }
 
 Node* FibonacciHeap::getMin() {
     return minNode;
 }
 
-Node* FibonacciHeap::deleteMin() {
-    if (minNode == nullptr) {
-        return nullptr;
-    }
-
-    Node* min = minNode;
-    if (minNode->child != nullptr) {
-        Node* child = minNode->child;
-        do {
-            Node* next = child->right;
-            minNode->left->right = child;
-            child->right = minNode->right;
-            minNode->right->left = child;
-            child->left = minNode->left;
-            child->parent = nullptr;
-            if (child->key < minNode->key) {
-                minNode = child;
-            }
-            child->marked = false;
-            child = next;
-        } while (child != minNode->child);
-    }
-
-    minNode->left->right = minNode->right;
-    minNode->right->left = minNode->left;
-    if (minNode == minNode->right) {
-        minNode = nullptr;
-    } else {
-        minNode = minNode->right;
-        consolidate();
-    }
-
-    size--;
-    return min;
-}
-
-bool FibonacciHeap::isEmpty() {
-    return size == 0;
-}
-
-void FibonacciHeap::cut(Node* child, Node* parent) {
-    child->left->right = child->right;
-    child->right->left = child->left;
-    parent->child = child->right;
-    parent->degree--;
-
-    child->left = minNode;
-    child->right = minNode->right;
-    minNode->right->left = child;
-    minNode->right = child;
-
-    child->parent = nullptr;
-    child->marked = false;
-}
-
-void FibonacciHeap::cascadingCut(Node* node) {
-    Node* parent = node->parent;
-    if (parent != nullptr) {
-        if (!node->marked) {
-            node->marked = true;
-        } else {
-            cut(node, parent);
-            cascadingCut(parent);
+Node* FibonacciHeap::extractMin() {
+    Node* z = minNode;
+    if (z != nullptr) {
+        Node* child = z->child;
+        if (child != nullptr) {
+            Node* c = child;
+            do {
+                Node* next = c->right;
+                c->left = z;
+                c->right = z->right;
+                z->right = c;
+                c->right->left = c;
+                c->parent = nullptr;
+                c = next;
+            } while (c != child);
         }
+        z->left->right = z->right;
+        z->right->left = z->left;
+        if (z == z->right) {
+            minNode = nullptr;
+        } else {
+            minNode = z->right;
+            consolidate();
+        }
+        numNodes--;
     }
+    return z;
+}
+
+void FibonacciHeap::decreaseKey(Node* node, float newKey) {
+    if (newKey > node->key) {
+        cerr << "New key is greater than the current key." << endl;
+        return;
+    }
+    node->key = newKey;
+    Node* y = node->parent;
+    if (y != nullptr && node->key < y->key) {
+        cut(node, y);
+        cascadingCut(y);
+    }
+    if (node->key < minNode->key) {
+        minNode = node;
+    }
+}
+
+void FibonacciHeap::link(Node* y, Node* x) {
+    y->left->right = y->right;
+    y->right->left = y->left;
+    y->parent = x;
+    if (x->child == nullptr) {
+        x->child = y;
+        y->left = y;
+        y->right = y;
+    } else {
+        y->left = x->child;
+        y->right = x->child->right;
+        x->child->right = y;
+        y->right->left = y;
+    }
+    x->degree++;
+    y->marked = false;
 }
 
 void FibonacciHeap::consolidate() {
-    int maxDegree = static_cast<int>(log(size) / log(1.618)); // Golden ratio
+    int maxDegree = static_cast<int>(log2(numNodes)) + 1;
+    vector<Node*> degreeTable(maxDegree, nullptr);
 
-    std::vector<Node*> degreeTable(maxDegree + 1, nullptr);
-    Node* nodesToVisit = minNode;
-    std::vector<Node*> nodes;
+    Node* nodes[maxDegree];
+    for (int i = 0; i < maxDegree; i++) {
+        nodes[i] = nullptr;
+    }
 
+    Node* x = minNode;
+    int numRoots = 0;
+    Node* next;
     do {
-        nodes.push_back(nodesToVisit);
-        nodesToVisit = nodesToVisit->right;
-    } while (nodesToVisit != minNode);
+        numRoots++;
+        x = x->right;
+    } while (x != minNode);
 
-    for (Node* node : nodes) {
-        int degree = node->degree;
-        while (degreeTable[degree] != nullptr) {
-            Node* other = degreeTable[degree];
-            if (node->key > other->key) {
-                std::swap(node, other);
+    while (numRoots > 0) {
+        int d = x->degree;
+        next = x->right;
+        while (nodes[d] != nullptr) {
+            Node* y = nodes[d];
+            if (x->key > y->key) {
+                Node* temp = x;
+                x = y;
+                y = temp;
             }
-            link(other, node);
-            degreeTable[degree] = nullptr;
-            degree++;
+            link(y, x);
+            nodes[d] = nullptr;
+            d++;
         }
-        degreeTable[degree] = node;
+        nodes[d] = x;
+        x = next;
+        numRoots--;
     }
 
     minNode = nullptr;
-    for (int i = 0; i <= maxDegree; i++) {
-        if (degreeTable[i] != nullptr) {
+    for (int i = 0; i < maxDegree; i++) {
+        if (nodes[i] != nullptr) {
             if (minNode == nullptr) {
-                minNode = degreeTable[i];
+                minNode = nodes[i];
             } else {
-                degreeTable[i]->left->right = degreeTable[i]->right;
-                degreeTable[i]->right->left = degreeTable[i]->left;
-                degreeTable[i]->left = minNode;
-                degreeTable[i]->right = minNode->right;
-                minNode->right->left = degreeTable[i];
-                minNode->right = degreeTable[i];
-                if (degreeTable[i]->key < minNode->key) {
-                    minNode = degreeTable[i];
+                if (nodes[i]->key < minNode->key) {
+                    minNode = nodes[i];
                 }
             }
         }
     }
 }
 
-void FibonacciHeap::link(Node* child, Node* parent) {
-    child->left->right = child->right;
-    child->right->left = child->left;
-
-    child->parent = parent;
-    if (parent->child == nullptr) {
-        parent->child = child;
-        child->right = child;
-        child->left = child;
-    } else {
-        child->left = parent->child;
-        child->right = parent->child->right;
-        parent->child->right->left = child;
-        parent->child->right = child;
+void FibonacciHeap::cut(Node* x, Node* y) {
+    x->left->right = x->right;
+    x->right->left = x->left;
+    y->degree--;
+    if (y->child == x) {
+        y->child = x->right;
     }
+    if (y->degree == 0) {
+        y->child = nullptr;
+    }
+    x->left = minNode;
+    x->right = minNode->right;
+    minNode->right = x;
+    x->right->left = x;
+    x->parent = nullptr;
+    x->marked = false;
+}
 
-    parent->degree++;
-    child->marked = false;
+void FibonacciHeap::cascadingCut(Node* y) {
+    Node* z = y->parent;
+    if (z != nullptr) {
+        if (!y->marked) {
+            y->marked = true;
+        } else {
+            cut(y, z);
+            cascadingCut(z);
+        }
+    }
 }

@@ -1,45 +1,43 @@
 #ifndef FIBONACCI_HEAP_H
 #define FIBONACCI_HEAP_H
 
-#include <iostream>
 #include <vector>
+#include <limits>
 #include <cmath>
+#include <iostream>
+#include <unordered_map>
 
 using namespace std;
 
-// Represents a node of the heap
-class Node {
-public:
-    Node(int _key, int _value);
-
-    int key;
+struct Node {
+    float key;
     int value;
-    Node* child = nullptr;
-    Node* parent = nullptr;
-    Node* left = this;
-    Node* right = this;
-    bool marked = false;
-    int degree = 0;
+    Node* parent;
+    Node* child;
+    Node* left;
+    Node* right;
+    bool marked;
+    int degree;
 };
 
 class FibonacciHeap {
-public:
-    FibonacciHeap();
+    public:
+        FibonacciHeap();
 
-    Node* insert(int key, int value);
-    void decreaseKey(Node* node, int newKey);
-    Node* getMin();
-    Node* deleteMin();
-    bool isEmpty();
+        bool isEmpty();
+        Node* insert(float key, int value);
+        Node* getMin();
+        Node* extractMin();
+        void decreaseKey(Node* node, float newKey);
 
-private:
-    Node* minNode;
-    int size;
+    private:
+        Node* minNode = nullptr;
+        int numNodes = 0;
 
-    void cut(Node* child, Node* parent);
-    void cascadingCut(Node* node);
-    void consolidate();
-    void link(Node* child, Node* parent);
+        void link(Node* y, Node* x);
+        void consolidate();
+        void cut(Node* x, Node* y);
+        void cascadingCut(Node* y);
 };
 
 #endif // FIBONACCI_HEAP_H
