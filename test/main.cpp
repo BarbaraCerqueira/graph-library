@@ -13,33 +13,9 @@ int userInteraction();
 int caseStudy();
 int WeightedGraphInteraction();
 int UnweightedGraphInteraction();
+void getShortestPathInteraction(WeightedGraph* graph, bool useHeap);
 
 int main() {
-
-    // WeightedGraph* graph = new WeightedGraph();
-    // graph->readGraphFromFile("case-study-graphs/teste_2.txt");
-    
-    // int n = graph->findDegree(8);
-    // cout << "Degree of vertex 8: " << n << endl;
-
-    // pair<int, list<int>> pathInfo1, pathInfo2;
-
-    // pathInfo1 = graph->shortestPath(1,8,false);
-    // cout << "Without Heap: Path between 1 and 8, distance is " << pathInfo1.first << " and path is ";
-    // for (int vertex : pathInfo1.second) {
-    //     cout << vertex << " ";
-    // }
-    // cout << endl;
-
-    // pathInfo2 = graph->shortestPath(1,8,true);
-    // cout << "With Heap: Path between 1 and 8, distance is " << pathInfo2.first << " and path is ";
-    // for (int vertex : pathInfo2.second) {
-    //     cout << vertex << " ";
-    // }
-    // cout << endl;
-
-    // delete graph;
-    
     int choice;
 
     cout << endl << "Graph Library Testing Interface" << endl;
@@ -104,61 +80,11 @@ int WeightedGraphInteraction() {
 
         switch (choice) {
             case 1: {
-                int source, destination;
-                pair<float, list<int>> result;
-
-                cout << "Enter source and destination vertices: ";
-                cin >> source >> destination;
-
-                // //teste
-                // graph->dijkstraHeap(source);
-                // break;
-
-                double duration = wallTime([&graph, &result, &source, &destination](){
-                    result = graph->shortestPath(source, destination, true);
-                });
-
-                if (result.first == INFINITY_FLOAT){
-                    cout << "There is no path between those vertices." << endl;
-                    break;
-                }
-
-                cout << "Distance: " << result.first << endl;
-                cout << "Shortest Path: ";
-                for (int vertex : result.second) {
-                    cout << vertex << " ";
-                }
-                cout << endl;
-                cout << "Execution finished after " << duration << " seconds." << endl;
+                getShortestPathInteraction(graph, true); // Using Heap
                 break;
             }
             case 2: {
-                int source, destination;
-                pair<float, list<int>> result;
-
-                cout << "Enter source and destination vertices: ";
-                cin >> source >> destination;
-
-                // //teste
-                // graph->dijkstraVector(source);
-                // break;
-
-                double duration = wallTime([&graph, &result, &source, &destination](){
-                    result = graph->shortestPath(source, destination, false);
-                });
-
-                if (result.first == INFINITY_FLOAT){
-                    cout << "There is no path between those vertices." << endl;
-                    break;
-                }
-
-                cout << "Distance: " << result.first << endl;
-                cout << "Shortest Path: ";
-                for (int vertex : result.second) {
-                    cout << vertex << " ";
-                }
-                cout << endl;
-                cout << "Execution finished after " << duration << " seconds." << endl;
+                getShortestPathInteraction(graph, false); // Using Vector
                 break;
             }
             case 3: {
@@ -317,4 +243,52 @@ void getMemoryUsage() {
     } else {
         cerr << "Error getting resource usage information." << endl;
     }
+}
+
+void getShortestPathInteraction(WeightedGraph* graph, bool useHeap) {
+    int source, destination;
+    int numVertices = graph->getNumVertices();
+    double duration;
+    pair<float, list<int>> result;
+
+    cout << "Enter source and destination vertices: ";
+
+    if (!(cin >> source) || source < 1 || source > numVertices) {
+        cout << "Invalid source vertex. Please enter a valid integer in the range [1, " << numVertices << "]." << endl;
+        cin.clear();  // Clear the error state of cin.
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+        return;
+    }
+
+    if (!(cin >> destination) || destination < 1 || destination > numVertices) {
+        cout << "Invalid destination vertex. Please enter a valid integer in the range [1, " << numVertices << "]." << endl;
+        cin.clear();  // Clear the error state of cin.
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+        return;
+    }
+
+    if (useHeap) {
+        duration = wallTime([&graph, &result, &source, &destination](){
+            result = graph->shortestPath(source, destination, true);
+        });
+    } else {
+        duration = wallTime([&graph, &result, &source, &destination](){
+            result = graph->shortestPath(source, destination, false);
+        });
+    }
+
+    if (result.first == INFINITY_FLOAT){
+        cout << "There is no path between those vertices." << endl;
+    } else {
+        cout << "Distance: " << result.first << endl;
+        cout << "Shortest Path: ";
+        for (int vertex : result.second) {
+            cout << vertex << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Execution finished after " << duration << " seconds." << endl;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+    return;
 }

@@ -77,11 +77,11 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
 
         // Getting vertex with minimum distance from source
         for (int v = 1; v <= numVertices; v++)
-            if (!visited[v - 1] and (minVertex == -1 or distance[v - 1] < distance[minVertex - 1])) 
+            if (!visited[v - 1] && (minVertex == -1 || distance[v - 1] < distance[minVertex - 1])) 
                 minVertex = v;
 
         cout << "Exploring vertex " << minVertex << endl;
-        if ((minVertex == destination) or // Min path of destination vertex is found
+        if ((minVertex == destination) || // Min path of destination vertex is found
             (distance[minVertex-1] == INFINITY_FLOAT)) break; // No more reachable nodes
         
         visited[minVertex-1] = true; // Vertex is explored
@@ -137,7 +137,7 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 
         cout << "Exploring vertex " << minVertex << endl;
 
-        if ((minVertex == destination) or // Min path of destination vertex is found
+        if ((minVertex == destination) || // Min path of destination vertex is found
             (minWeight == INFINITY_FLOAT)) break; // No more reachable nodes
 
         // Exploring neighbors of the current vertex
@@ -193,6 +193,10 @@ pair<float, list<int>> WeightedGraph::shortestPath(int source, int destination, 
     path.push_front(source);
 
     return {distance, path};
+}
+
+int WeightedGraph::getNumVertices() {
+    return numVertices;
 }
 
 void WeightedGraph::clear() {

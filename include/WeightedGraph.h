@@ -31,6 +31,7 @@ public:
     DijkstraResult dijkstraVector(int source, int destination = -1);
     DijkstraResult dijkstraHeap(int source, int destination = -1);
     pair<float, list<int>> shortestPath(int source, int destination, bool heap = true);
+    int getNumVertices();
     void clear();
 
 private:
