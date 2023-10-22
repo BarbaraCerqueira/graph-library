@@ -80,7 +80,6 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
             if (!visited[v - 1] && (minVertex == -1 || distance[v - 1] < distance[minVertex - 1])) 
                 minVertex = v;
 
-        cout << "Exploring vertex " << minVertex << endl;
         if ((minVertex == destination) || // Min path of destination vertex is found
             (distance[minVertex-1] == INFINITY_FLOAT)) break; // No more reachable nodes
         
@@ -129,13 +128,9 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 
     // Continue until the heap is empty or destination is reached
     while (!heap.isEmpty()) {
-        //cout << "Hi! Heap Size is " << heap.size << "!" << endl;
-
-        Node* minNode = heap.extractMin(); // Remove explored vertex from heap
+        Node* minNode = heap.extractMin(); // Remove vertex from heap - Vertex Explored
         int minVertex = minNode->value;
         float minWeight = minNode->key;
-
-        cout << "Exploring vertex " << minVertex << endl;
 
         if ((minVertex == destination) || // Min path of destination vertex is found
             (minWeight == INFINITY_FLOAT)) break; // No more reachable nodes
