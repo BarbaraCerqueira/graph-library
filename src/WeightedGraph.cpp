@@ -120,7 +120,7 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
 
     // Insert all vertices into the heap with infinite distance
     for (int vertex=1; vertex <= numVertices; vertex++){
-        nodeMap[vertex] = heap.insert(INFINITY_FLOAT, vertex);
+        nodeMap[vertex] = heap.insert(INFINITY_FLOAT,vertex);
     }
 
     // Update distance of the source vertex to 0

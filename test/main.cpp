@@ -110,9 +110,9 @@ int WeightedGraphInteraction() {
                 cout << "Enter source and destination vertices: ";
                 cin >> source >> destination;
 
-                //teste
-                graph->dijkstraHeap(source);
-                break;
+                // //teste
+                // graph->dijkstraHeap(source);
+                // break;
 
                 double duration = wallTime([&graph, &result, &source, &destination](){
                     result = graph->shortestPath(source, destination, true);
@@ -139,9 +139,9 @@ int WeightedGraphInteraction() {
                 cout << "Enter source and destination vertices: ";
                 cin >> source >> destination;
 
-                //teste
-                graph->dijkstraVector(source);
-                break;
+                // //teste
+                // graph->dijkstraVector(source);
+                // break;
 
                 double duration = wallTime([&graph, &result, &source, &destination](){
                     result = graph->shortestPath(source, destination, false);

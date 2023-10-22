@@ -39,18 +39,21 @@ Node* FibonacciHeap::getMin() {
 Node* FibonacciHeap::extractMin() {
     Node* z = minNode;
     if (z != nullptr) {
-        Node* child = z->child;
-        if (child != nullptr) {
-            Node* c = child;
+        if (z->child != nullptr) {
+            Node* child = z->child;
+            Node* temp = child;
             do {
-                Node* next = c->right;
-                c->left = z;
-                c->right = z->right;
-                z->right = c;
-                c->right->left = c;
-                c->parent = nullptr;
-                c = next;
-            } while (c != child);
+                Node* nextChild = temp->right;
+                minNode->left->right = temp;
+                temp->right = minNode;
+                temp->left = minNode->left;
+                minNode->left = temp;
+                if (temp->key < minNode->key) {
+                    minNode = temp;
+                }
+                temp->parent = nullptr;
+                temp = nextChild;
+            } while (temp != child);
         }
         z->left->right = z->right;
         z->right->left = z->left;
@@ -101,47 +104,41 @@ void FibonacciHeap::link(Node* y, Node* x) {
 
 void FibonacciHeap::consolidate() {
     int maxDegree = static_cast<int>(log2(numNodes)) + 1;
+    vector<Node*> degreeTable(maxDegree+1, nullptr);
 
-    Node* nodes[maxDegree+1];
-    for (int i = 0; i < maxDegree+1; i++) {
-        nodes[i] = nullptr;
+    Node* current = minNode;
+    vector<Node*> nodes;
+    while (true) {
+        nodes.push_back(current);
+        current = current->right;
+        if (current == minNode) {
+            break;
+        }
     }
 
-    Node* x = minNode;
-    int numRoots = 0;
-    Node* next;
-    do {
-        numRoots++;
-        x = x->right;
-    } while (x != minNode);
-
-    while (numRoots > 0) {
-        int d = x->degree;
-        next = x->right;
-        while (nodes[d] != nullptr) {
-            Node* y = nodes[d];
+    for (Node* node : nodes) {
+        Node* x = node;
+        int degree = x->degree;
+        while (degreeTable[degree] != nullptr) {
+            Node* y = degreeTable[degree];
             if (x->key > y->key) {
-                Node* temp = x;
-                x = y;
-                y = temp;
+                swap(x, y);
             }
             link(y, x);
-            nodes[d] = nullptr;
-            d++;
+            degreeTable[degree] = nullptr;
+            degree++;
         }
-        nodes[d] = x;
-        x = next;
-        numRoots--;
+        degreeTable[degree] = x;
     }
 
     minNode = nullptr;
-    for (int i = 0; i < maxDegree; i++) {
-        if (nodes[i] != nullptr) {
+    for (Node* node : degreeTable) {
+        if (node != nullptr) {
             if (minNode == nullptr) {
-                minNode = nodes[i];
+                minNode = node;
             } else {
-                if (nodes[i]->key < minNode->key) {
-                    minNode = nodes[i];
+                if (node->key < minNode->key) {
+                    minNode = node;
                 }
             }
         }
