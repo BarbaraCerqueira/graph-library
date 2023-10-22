@@ -27,6 +27,13 @@ int caseStudyTP2() {
         // Path of file containing current graph
         pathGraph = "case-study-graphs/grafo_W_" + to_string(test_number) + ".txt";
 
+        // Check if the file exists
+        ifstream file(pathGraph);
+        if (!file.good()) {
+            cout << "Graph file does not exist: " << pathGraph << endl;
+            continue; // Skip this iteration and move to the next graph
+        }
+
         // Initialize graph
         graph = new WeightedGraph();
         graph->readGraphFromFile(pathGraph);
@@ -48,12 +55,12 @@ int caseStudyTP2() {
                 pathString += (next(it) != path.end()) ? "-" : "";
             }
 
-            resultsFile << pathString << distance;
+            resultsFile << pathString << "," << distance << ",";
         }
 
         // Getting Djikstra execution time
         cout << "Finding Dijkstra average execution time using Heap..." << endl;
-        resultsFile << dijkstraHeapTime(graph);
+        resultsFile << dijkstraHeapTime(graph) << ",";
         cout << "Finding Dijkstra average execution time using Vector(No Heap)..." << endl;
         resultsFile << dijkstraVectorTime(graph);
 
