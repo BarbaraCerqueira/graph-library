@@ -101,10 +101,9 @@ void FibonacciHeap::link(Node* y, Node* x) {
 
 void FibonacciHeap::consolidate() {
     int maxDegree = static_cast<int>(log2(numNodes)) + 1;
-    vector<Node*> degreeTable(maxDegree, nullptr);
 
-    Node* nodes[maxDegree];
-    for (int i = 0; i < maxDegree; i++) {
+    Node* nodes[maxDegree+1];
+    for (int i = 0; i < maxDegree+1; i++) {
         nodes[i] = nullptr;
     }
 
