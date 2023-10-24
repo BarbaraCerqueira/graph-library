@@ -23,7 +23,7 @@ int caseStudyTP2() {
     vector<int> destinations = {20, 30, 40, 50, 60};
 
     // Perform case study to each graph in folder 'case-study-graphs' - All 5 must be there
-    for (int test_number = 1; test_number <= 6; ++test_number) {
+    for (int test_number = 1; test_number <= 5; ++test_number) {
         // Path of file containing current graph
         pathGraph = "case-study-graphs/grafo_W_" + to_string(test_number) + ".txt";
 
@@ -82,13 +82,14 @@ double dijkstraHeapTime(WeightedGraph* graph, int iterations) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= iterations; ++i) {
-        cout << "Iteraction " << i << ":" << endl;
+        cout << "\rIteration " << i << " of " << iterations << flush;
         int randomVertex = getRandomVertex(graph->getNumVertices());
         duration = wallTime([&graph, &randomVertex](){
             graph->dijkstraHeap(randomVertex);
         });
         totalDuration += duration;
     }
+    cout << "\r" << string(50, ' ') << "\r";  // Removes progress
 
     double avgDuration = static_cast<double>(totalDuration) / iterations;
     return avgDuration;
@@ -98,13 +99,14 @@ double dijkstraVectorTime(WeightedGraph* graph, int iterations) {
     double duration, totalDuration = 0;
 
     for (int i = 1; i <= iterations; ++i) {
-        cout << "Iteraction " << i << ":" << endl;
+        cout << "\rIteration " << i << " of " << iterations << flush;
         int randomVertex = getRandomVertex(graph->getNumVertices());
         duration = wallTime([&graph, &randomVertex](){
             graph->dijkstraVector(randomVertex);
         });
         totalDuration += duration;
     }
+    cout << "\r" << string(50, ' ') << "\r";  // Removes progress 
 
     double avgDuration = static_cast<double>(totalDuration) / iterations;
     return avgDuration;

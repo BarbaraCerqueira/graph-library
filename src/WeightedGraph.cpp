@@ -63,7 +63,6 @@ int WeightedGraph::findDegree(int vertex) {
     provided, the search is ran throughout the entire graph. */
 DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
     DijkstraResult result;
-    int verticesProcessed = 0; // for progress
 
     vector<float> distance(numVertices, INFINITY_FLOAT); // Initializing all distances as 'infinite'
     vector<int> parent(numVertices, -1);
@@ -86,11 +85,6 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
         
         visited[minVertex-1] = true; // Vertex is explored
 
-        // Tracking progress
-        verticesProcessed++;
-        float progressPercentage = static_cast<float> (verticesProcessed * 100) / numVertices;
-        cout << "\rProgress: " << setw(5) << progressPercentage << "% explored vertices" << flush;
-
         for (pair<int, float> neighbor : findNeighbors(minVertex)) {
             int neighborVertex = neighbor.first;
             float neighborWeight = neighbor.second;
@@ -104,8 +98,6 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
             }
         }
     }
-    cout << "\r" << string(40, ' ') << "\r";   // Removes progress 
-    if (destination == -1 ) cout << "\033[1A" << "\r" << flush;  // Removes Iteration line
 
     result.distance = distance;
     result.parent = parent;
@@ -118,7 +110,6 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
     provided, the search is ran throughout the entire graph. */
 DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
     DijkstraResult result;
-    int verticesProcessed = 0; // for progress
 
     // Create a Fibonacci Heap and initialize distances and parent arrays
     FibonacciHeap heap;
@@ -143,11 +134,6 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
         int minVertex = minNode->value;
         float minWeight = minNode->key;
 
-        // Tracking progress
-        verticesProcessed++;
-        float progressPercentage = static_cast<float> (verticesProcessed * 100) / numVertices;
-        cout << "\rProgress: " << setw(5) << progressPercentage << "% explored vertices" << flush;
-
         if ((minVertex == destination) || // Min path of destination vertex is found
             (minWeight == INFINITY_FLOAT)) break; // No more reachable nodes
 
@@ -168,8 +154,6 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
             }
         }
     }
-    cout << "\r" << string(40, ' ') << "\r";   // Removes progress 
-    if (destination == -1 ) cout << "\033[1A" << "\r" << flush;  // Removes Iteration line
 
     result.distance = distance;
     result.parent = parent;
