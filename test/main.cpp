@@ -260,7 +260,7 @@ void getShortestPathInteraction(WeightedGraph* graph, bool useHeap) {
         return;
     }
 
-    if (!(cin >> destination) || destination < 1 || destination > numVertices) {
+    if (!(cin >> destination) || destination < 1|| destination > numVertices) {
         cout << "Invalid destination vertex. Please enter a valid integer in the range [1, " << numVertices << "]." << endl;
         cin.clear();  // Clear the error state of cin.
         cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.

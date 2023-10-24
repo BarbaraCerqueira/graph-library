@@ -7,6 +7,7 @@
 #include <vector>
 #include <list>
 #include <climits>
+#include <iomanip>
 #include <unordered_map>
 
 using namespace std;
@@ -32,6 +33,7 @@ public:
     DijkstraResult dijkstraHeap(int source, int destination = -1);
     pair<float, list<int>> shortestPath(int source, int destination, bool heap = true);
     int getNumVertices();
+    int getNumEdges();
     void clear();
 
 private:

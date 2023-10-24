@@ -6,8 +6,8 @@
 #include <vector>
 #include <string>
 
-double dijkstraHeapTime(WeightedGraph* graph);
-double dijkstraVectorTime(WeightedGraph* graph);
+double dijkstraHeapTime(WeightedGraph* graph, int iterations);
+double dijkstraVectorTime(WeightedGraph* graph, int iterations);
 
 int caseStudyTP2() {
     ofstream resultsFile("case_study_tp2.csv");
@@ -60,9 +60,14 @@ int caseStudyTP2() {
 
         // Getting Djikstra execution time
         cout << "Finding Dijkstra average execution time using Heap..." << endl;
-        resultsFile << dijkstraHeapTime(graph) << ",";
+        resultsFile << dijkstraHeapTime(graph, 100) << ",";
+
         cout << "Finding Dijkstra average execution time using Vector(No Heap)..." << endl;
-        resultsFile << dijkstraVectorTime(graph);
+        if (graph->getNumEdges() < 10000000) {
+            resultsFile << dijkstraVectorTime(graph, 100);
+        } else {
+            resultsFile << dijkstraVectorTime(graph, 1);
+        }
 
         delete graph; // Free memory
         resultsFile << endl;
@@ -73,10 +78,11 @@ int caseStudyTP2() {
     return 0;
 }
 
-double dijkstraHeapTime(WeightedGraph* graph) {
+double dijkstraHeapTime(WeightedGraph* graph, int iterations) {
     double duration, totalDuration = 0;
 
-    for (int i = 1; i <= 100; ++i) {
+    for (int i = 1; i <= iterations; ++i) {
+        cout << "Iteraction " << i << ":" << endl;
         int randomVertex = getRandomVertex(graph->getNumVertices());
         duration = wallTime([&graph, &randomVertex](){
             graph->dijkstraHeap(randomVertex);
@@ -84,13 +90,15 @@ double dijkstraHeapTime(WeightedGraph* graph) {
         totalDuration += duration;
     }
 
-    return totalDuration / 100.0;
+    double avgDuration = static_cast<double>(totalDuration) / iterations;
+    return avgDuration;
 }
 
-double dijkstraVectorTime(WeightedGraph* graph) {
+double dijkstraVectorTime(WeightedGraph* graph, int iterations) {
     double duration, totalDuration = 0;
 
-    for (int i = 1; i <= 100; ++i) {
+    for (int i = 1; i <= iterations; ++i) {
+        cout << "Iteraction " << i << ":" << endl;
         int randomVertex = getRandomVertex(graph->getNumVertices());
         duration = wallTime([&graph, &randomVertex](){
             graph->dijkstraVector(randomVertex);
@@ -98,7 +106,8 @@ double dijkstraVectorTime(WeightedGraph* graph) {
         totalDuration += duration;
     }
 
-    return totalDuration / 100.0;
+    double avgDuration = static_cast<double>(totalDuration) / iterations;
+    return avgDuration;
 }
 
 #endif // CASE_STUDY_TP2_H
