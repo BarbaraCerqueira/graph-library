@@ -66,7 +66,7 @@ int caseStudyTP2() {
         if (graph->getNumEdges() < 10000000) {
             resultsFile << dijkstraVectorTime(graph, 100);
         } else {
-            resultsFile << dijkstraVectorTime(graph, 1);
+            resultsFile << dijkstraVectorTime(graph, 3);
         }
 
         delete graph; // Free memory
