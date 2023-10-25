@@ -5,12 +5,18 @@ Os trabalhos consistem em desenvolver uma biblioteca para representação e mani
 ## Funcionalidades
 A biblioteca provê as seguintes funcionalidades:
 
+Grafos sem peso:
 * Ler grafo de arquivo
 * Realizar buscas BFS e DFS
 * Encontrar componentes conexos
 * Calcular menor distância entre vértices
 * Calcular diâmetro do grafo
 * Gerar arquivo com informações do grafo
+
+Grafos com peso:
+* Ler grafo de arquivo
+* Calcular distância e menor caminho entre vértices (Dijkstra usando Heap)
+* Calcular distância e menor caminho entre vértices (Dijkstra sem Heap)
 
 ## Instruções
 Para executar a interface de testes, use o comando:
