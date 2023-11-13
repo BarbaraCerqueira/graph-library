@@ -16,24 +16,29 @@ int UnweightedGraphInteraction();
 void getShortestPathInteraction(WeightedGraph* graph, bool useHeap);
 
 int main() {
-    int choice;
+    WeightedGraph graph (true);
+    graph.readGraphFromFile("case-study-graphs/teste_1.txt");
+    int flow = graph.fordFulkerson(1, 4);
+    cout << "Max Flow is " << flow << endl;
 
-    cout << endl << "Graph Library Testing Interface" << endl;
-    cout << "-------------------------------" << endl;
+    // int choice;
 
-    cout << endl << "Choose mode:" << endl;
-    cout << "1. User Interaction" << endl;
-    cout << "2. Run Case Study" << endl;
-    cin >> choice;
+    // cout << endl << "Graph Library Testing Interface" << endl;
+    // cout << "-------------------------------" << endl;
 
-    if (choice == 1) {
-        userInteraction();
-    } else if (choice == 2) {
-        caseStudy();
-    } else {
-        cout << "Invalid choice." << endl;
-        return 1;
-    }
+    // cout << endl << "Choose mode:" << endl;
+    // cout << "1. User Interaction" << endl;
+    // cout << "2. Run Case Study" << endl;
+    // cin >> choice;
+
+    // if (choice == 1) {
+    //     userInteraction();
+    // } else if (choice == 2) {
+    //     caseStudy();
+    // } else {
+    //     cout << "Invalid choice." << endl;
+    //     return 1;
+    // }
 
     return 0;
 }

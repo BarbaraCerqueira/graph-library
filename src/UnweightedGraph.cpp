@@ -46,9 +46,7 @@ SearchResult UnweightedGraph::BFS(int startVertex, bool outputToFile) {
     queue.push(startVertex);
 
     while (!queue.empty()) {
-        // Dequeue a vertex from the queue and print it
         int currentVertex = queue.front();
-        //cout << currentVertex << " "; // DEBUGGING
         queue.pop();
 
         // Get all adjacent vertices of the dequeued vertex
