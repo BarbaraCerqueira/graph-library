@@ -41,12 +41,14 @@ private:
     void addEdge(int source, int destination, float weight, float flow = 0);
     void deleteEdge(int source, int destination);
     void addVertex();
-    list<WeightedEdge> findNeighbors(int vertex);
+    list<WeightedEdge>& findNeighbors(int vertex);
     int findDegree(int vertex);
     bool findAugmentingPath(int source, int sink, vector<int>& parent);
     float getResidualCapacity(int startEdge, int endEdge);
     void updateResidualCapacity(int startEdge, int endEdge, float flow);
     void updateFlow(int startEdge, int endEdge, float flow);
+    void outputFlowToFile();
+    void clearFlow();
     void clear();
 
 public:

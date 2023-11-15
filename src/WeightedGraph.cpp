@@ -79,14 +79,14 @@ void WeightedGraph::addVertex() {
 }
 
 // Return a list of neighbors with their respective weights
-list<WeightedEdge> WeightedGraph::findNeighbors(int vertex) {
+list<WeightedEdge>& WeightedGraph::findNeighbors(int vertex) {
     if (vertex > 0 && vertex <= numVertices) {
         return adjacencyList[vertex-1];
     } else {
         cout << "Invalid vertex!" << endl;
-        return list<WeightedEdge>();
+        static list<WeightedEdge> emptyList;
+        return emptyList;
     }
-
 }
 
 int WeightedGraph::findDegree(int vertex) {
@@ -125,7 +125,7 @@ DijkstraResult WeightedGraph::dijkstraVector(int source, int destination) {
         
         visited[minVertex-1] = true; // Vertex is explored
 
-        for (WeightedEdge neighbor : findNeighbors(minVertex)) {
+        for (WeightedEdge& neighbor : findNeighbors(minVertex)) {
             int neighborVertex = neighbor.destination;
             float neighborWeight = neighbor.weight;
             
@@ -178,7 +178,7 @@ DijkstraResult WeightedGraph::dijkstraHeap(int source, int destination) {
             (minWeight == INFINITY_FLOAT)) break; // No more reachable nodes
 
         // Exploring neighbors of the current vertex
-        for (WeightedEdge neighbor : findNeighbors(minVertex)) {
+        for (WeightedEdge& neighbor : findNeighbors(minVertex)) {
             int neighborVertex = neighbor.destination;
             float neighborWeight = neighbor.weight;
 
@@ -248,7 +248,7 @@ bool WeightedGraph::findAugmentingPath(int source, int sink, vector<int>& parent
         int currentVertex = queue.front();
         queue.pop();
 
-        for (WeightedEdge neighbor : findNeighbors(currentVertex)) {
+        for (WeightedEdge& neighbor : findNeighbors(currentVertex)) {
             int neighborVertex = neighbor.destination;
 
             if (!visited[neighborVertex-1]) {
@@ -270,8 +270,10 @@ pair<float, vector<list<WeightedEdge>>> WeightedGraph::fordFulkerson(int source,
     // Create residual graph using original graph's capacities
     WeightedGraph residualGraph = *this;
 
+    // Innitialization
     vector<int> parent(numVertices, -1);
     float maxFlow = 0; // There is no flow initially
+    clearFlow();
 
     // Augment the flow while there is path from source to sink
     while (residualGraph.findAugmentingPath(source, sink, parent)) {
@@ -295,20 +297,7 @@ pair<float, vector<list<WeightedEdge>>> WeightedGraph::fordFulkerson(int source,
     }
 
     if (outputToFile) {
-        ofstream outputFile("flow_allocation.txt");
-        if (!outputFile.good()) {
-            cerr << "Error trying to write on file." << endl;
-            return {maxFlow, adjacencyList};
-        }
-
-        outputFile << "Edge Start\tEdge End\tFlow\n";
-        for (int vertex = 1; vertex <= numVertices; vertex++) {
-            for (WeightedEdge edge : findNeighbors(vertex)) {
-                outputFile << vertex << "\t\t\t" << edge.destination << "\t\t\t" << edge.flow << "\n";
-            }
-        }
-
-        outputFile.close();
+        outputFlowToFile();
     }
 
     // Return the overall flow
@@ -316,15 +305,15 @@ pair<float, vector<list<WeightedEdge>>> WeightedGraph::fordFulkerson(int source,
 }
 
 float WeightedGraph::getResidualCapacity(int startEdge, int endEdge) {
-    for (WeightedEdge neighbor : findNeighbors(startEdge)) {
-        if (neighbor.destination == endEdge)
-            return neighbor.weight;
+    for (WeightedEdge edge : findNeighbors(startEdge)) {
+        if (edge.destination == endEdge)
+            return edge.weight;
     }
     return 0;  // If no edge found, residual capacity is 0
 }
 
 void WeightedGraph::updateResidualCapacity(int startEdge, int endEdge, float flow) {
-    for (WeightedEdge& edge : adjacencyList[startEdge-1]) {
+    for (WeightedEdge& edge : findNeighbors(startEdge)) {
         if (edge.destination == endEdge) {
             edge.weight += flow;
 
@@ -338,13 +327,38 @@ void WeightedGraph::updateResidualCapacity(int startEdge, int endEdge, float flo
 }
 
 void WeightedGraph::updateFlow(int startEdge, int endEdge, float flow) {
-    for (WeightedEdge& edge : adjacencyList[startEdge-1]) {
+    for (WeightedEdge& edge : findNeighbors(startEdge)) {
         if (edge.destination == endEdge) {
             edge.flow += flow;
             return;
         }
     }
     return; // If edge is not found, that was a reverse edge and nothing is done
+}
+
+void WeightedGraph::clearFlow() {
+    for (int vertex = 1; vertex <= numVertices; vertex++) {
+        for (WeightedEdge& edge : adjacencyList[vertex-1]) {
+            edge.flow = 0;
+        }
+    }
+}
+
+void WeightedGraph::outputFlowToFile() {
+    ofstream outputFile("flow_allocation.txt");
+    if (!outputFile.good()) {
+        cerr << "Error trying to write on file." << endl;
+        return;
+    }
+
+    outputFile << "Edge Start\tEdge End\tFlow\n";
+    for (int vertex = 1; vertex <= numVertices; vertex++) {
+        for (WeightedEdge edge : findNeighbors(vertex)) {
+            outputFile << vertex << "\t\t\t" << edge.destination << "\t\t\t" << edge.flow << "\n";
+        }
+    }
+
+    outputFile.close();
 }
 
 int WeightedGraph::getNumVertices() {
