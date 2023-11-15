@@ -18,8 +18,10 @@ void getShortestPathInteraction(WeightedGraph* graph, bool useHeap);
 int main() {
     WeightedGraph graph (true);
     graph.readGraphFromFile("case-study-graphs/teste_1.txt");
-    int flow = graph.fordFulkerson(1, 4);
-    cout << "Max Flow is " << flow << endl;
+    auto flow = graph.fordFulkerson(1, 4, true);
+    cout << "Max Flow is " << flow.first << endl;
+    cout << "Original graph's edges: " << graph.getNumEdges() << endl;
+    cout << "Original graph's vertices: " << graph.getNumVertices() << endl;
 
     // int choice;
 

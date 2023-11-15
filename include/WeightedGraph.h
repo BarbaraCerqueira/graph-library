@@ -21,22 +21,32 @@ struct DijkstraResult {
     vector<float> distance;
 };
 
+// Structure to represent an edge with weight and flow
+struct WeightedEdge {
+    int destination;
+    float weight;
+    float flow;
+
+    WeightedEdge(int dest, float w, float f) : destination(dest), weight(w), flow(f) {}
+};
+
 class WeightedGraph {
 private:
     int numVertices = 0; 
     int numEdges = 0;
     bool negativeWeight = false;
     bool isDirected;
-    vector<list<pair<int, float>>> adjacencyList;
+    vector<list<WeightedEdge>> adjacencyList;
 
-    void addEdge(int source, int destination, float weight);
+    void addEdge(int source, int destination, float weight, float flow = 0);
     void deleteEdge(int source, int destination);
     void addVertex();
-    list<pair<int, float>> findNeighbors(int vertex);
+    list<WeightedEdge> findNeighbors(int vertex);
     int findDegree(int vertex);
     bool findAugmentingPath(int source, int sink, vector<int>& parent);
-    int getResidualCapacity(int startEdge, int endEdge);
-    void updateResidualCapacity(int startEdge, int endEdge, int flow);
+    float getResidualCapacity(int startEdge, int endEdge);
+    void updateResidualCapacity(int startEdge, int endEdge, float flow);
+    void updateFlow(int startEdge, int endEdge, float flow);
     void clear();
 
 public:
@@ -46,7 +56,7 @@ public:
     pair<float, list<int>> shortestPath(int source, int destination, bool heap = true);
     DijkstraResult dijkstraVector(int source, int destination = -1);
     DijkstraResult dijkstraHeap(int source, int destination = -1);
-    int fordFulkerson(int source, int sink);
+    pair<float, vector<list<WeightedEdge>>> fordFulkerson(int source, int sink, bool outputToFile = false);
     int getNumVertices();
     int getNumEdges();
 };
