@@ -14,33 +14,27 @@ int caseStudy();
 int WeightedGraphInteraction();
 int UnweightedGraphInteraction();
 void getShortestPathInteraction(WeightedGraph* graph, bool useHeap);
+void fordFulkersonInteraction(WeightedGraph* graph);
 
 int main() {
-    WeightedGraph graph (true);
-    graph.readGraphFromFile("case-study-graphs/teste_1.txt");
-    auto flow = graph.fordFulkerson(1, 4, true);
-    cout << "Max Flow is " << flow.first << endl;
-    cout << "Original graph's edges: " << graph.getNumEdges() << endl;
-    cout << "Original graph's vertices: " << graph.getNumVertices() << endl;
+    int choice;
 
-    // int choice;
+    cout << endl << "Graph Library Testing Interface" << endl;
+    cout << "-------------------------------" << endl;
 
-    // cout << endl << "Graph Library Testing Interface" << endl;
-    // cout << "-------------------------------" << endl;
+    cout << endl << "Choose mode:" << endl;
+    cout << "1. User Interaction" << endl;
+    cout << "2. Run Case Study" << endl;
+    cin >> choice;
 
-    // cout << endl << "Choose mode:" << endl;
-    // cout << "1. User Interaction" << endl;
-    // cout << "2. Run Case Study" << endl;
-    // cin >> choice;
-
-    // if (choice == 1) {
-    //     userInteraction();
-    // } else if (choice == 2) {
-    //     caseStudy();
-    // } else {
-    //     cout << "Invalid choice." << endl;
-    //     return 1;
-    // }
+    if (choice == 1) {
+        userInteraction();
+    } else if (choice == 2) {
+        caseStudy();
+    } else {
+        cout << "Invalid choice." << endl;
+        return 1;
+    }
 
     return 0;
 }
@@ -82,7 +76,8 @@ int WeightedGraphInteraction() {
         cout << endl << "Choose an operation:" << endl;
         cout << "1. Get Shortest Path (With Heap)" << endl;
         cout << "2. Get Shortest Path (Without Heap)" << endl;
-        cout << "3. Quit" << endl;
+        cout << "3. Find Maximum Flow" << endl;
+        cout << "4. Quit" << endl;
         cin >> choice;
 
         switch (choice) {
@@ -95,6 +90,10 @@ int WeightedGraphInteraction() {
                 break;
             }
             case 3: {
+                fordFulkersonInteraction(graph);
+                break;
+            }
+            case 4: {
                 delete graph;
                 cout << "Execution terminated." << endl;
                 return 0;
@@ -296,6 +295,56 @@ void getShortestPathInteraction(WeightedGraph* graph, bool useHeap) {
     }
 
     cout << "Execution finished after " << duration << " seconds." << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+
+    return;
+}
+
+void fordFulkersonInteraction(WeightedGraph* graph) {
+    int source, sink;
+    string writeFile;
+    int numVertices = graph->getNumVertices();
+    double duration;
+    pair<float, vector<list<WeightedEdge>>> result;
+
+    cout << "Enter source and sink vertices: ";
+
+    // Validating source and sink input
+    if (!(cin >> source) || source < 1 || source > numVertices) {
+        cout << "Invalid source vertex. Please enter a valid integer in the range [1, " << numVertices << "]." << endl;
+        cin.clear();  // Clear the error state of cin.
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+        return;
+    }
+    if (!(cin >> sink) || sink < 1 || sink > numVertices) {
+        cout << "Invalid sink vertex. Please enter a valid integer in the range [1, " << numVertices << "]." << endl;
+        cin.clear();  // Clear the error state of cin.
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+        return;
+    }
+
+    cout << "Write resulting flow allocation per edge to file? [y/n] ";
+
+    // Validating option to write on file
+    if (!(cin >> writeFile) || (writeFile != "y" && writeFile != "n")) {
+        cout << "Invalid option." << endl;
+        cin.clear();  // Clear the error state of cin.
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear the input buffer.
+        return;
+    }
+
+    // Running ford fulkerson while measuring exec time
+    if (writeFile == "y") {
+        duration = wallTime([&graph, &result, &source, &sink](){
+            result = graph->fordFulkerson(source, sink, true);
+        });
+    }
+    else {
+        duration = wallTime([&graph, &result, &source, &sink](){
+            result = graph->fordFulkerson(source, sink, false);
+        });
+    }
+
+    cout << "Maximum Flow: " << result.first << endl;
+    cout << "Execution finished after " << duration << " seconds." << endl;
     return;
 }
