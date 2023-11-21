@@ -47,7 +47,7 @@ void WeightedGraph::addEdge(int source, int destination, float weight, float flo
     if (source > 0 && source <= numVertices && destination > 0 && destination <= numVertices) {
         adjacencyList[source-1].emplace_back(destination, weight, flow);
         if (!isDirected) {
-            adjacencyList[destination-1].emplace_back(destination, weight, flow);
+            adjacencyList[destination-1].emplace_back(source, weight, flow);
         }
         numEdges++;
     }
@@ -351,10 +351,9 @@ void WeightedGraph::outputFlowToFile() {
         return;
     }
 
-    outputFile << "Edge Start\tEdge End\tFlow\n";
     for (int vertex = 1; vertex <= numVertices; vertex++) {
         for (WeightedEdge edge : findNeighbors(vertex)) {
-            outputFile << vertex << "\t\t\t" << edge.destination << "\t\t\t" << edge.flow << "\n";
+            outputFile << vertex << " " << edge.destination << " " << edge.flow << "\n";
         }
     }
 

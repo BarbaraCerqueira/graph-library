@@ -1,5 +1,6 @@
 #include "CaseStudyTP1.h"
 #include "CaseStudyTP2.h"
+#include "CaseStudyTP3.h"
 
 #include <vector>
 #include <iostream>
@@ -11,7 +12,7 @@ using namespace std;
 void getMemoryUsage();
 int userInteraction();
 int caseStudy();
-int WeightedGraphInteraction();
+int WeightedGraphInteraction(bool isDirected);
 int UnweightedGraphInteraction();
 void getShortestPathInteraction(WeightedGraph* graph, bool useHeap);
 void fordFulkersonInteraction(WeightedGraph* graph);
@@ -43,13 +44,16 @@ int userInteraction() {
     int choice;
 
     cout << endl << "Choose the type of graph:" << endl;
-    cout << "1. Weighted Graph" << endl;
-    cout << "2. Unweighted Graph" << endl;
+    cout << "1. Weighted Directed Graph" << endl;
+    cout << "2. Weighted Undirected Graph" << endl;
+    cout << "3. Unweighted Graph" << endl;
     cin >> choice;
 
     if (choice == 1) {;
-        WeightedGraphInteraction();
-    } else if (choice == 2) {
+        WeightedGraphInteraction(true);
+    } else if (choice == 2) {;
+        WeightedGraphInteraction(false);
+    } else if (choice == 3) {
         UnweightedGraphInteraction();
     } else {
         cout << "Invalid choice." << endl;
@@ -59,8 +63,8 @@ int userInteraction() {
     return 0;
 } 
 
-int WeightedGraphInteraction() {
-    WeightedGraph* graph = new WeightedGraph();
+int WeightedGraphInteraction(bool isDirected) {
+    WeightedGraph* graph = new WeightedGraph(isDirected);
 
     string filepath;
     cout << endl << "Enter the path to the graph file: ";
@@ -228,12 +232,15 @@ int caseStudy() {
     cout << endl << "Choose which test set to run:" << endl;
     cout << "1. Trabalho Pratico 1 (TP1)" << endl;
     cout << "2. Trabalho Pratico 2 (TP2)" << endl;
+    cout << "3. Trabalho Pratico 3 (TP3)" << endl;
     cin >> choice;
 
     if (choice == 1) {
         caseStudyTP1();
     } else if (choice == 2) {
         caseStudyTP2();
+    } else if (choice == 3) {
+        caseStudyTP3();
     } else {
         cout << "Invalid choice." << endl;
         return 1;

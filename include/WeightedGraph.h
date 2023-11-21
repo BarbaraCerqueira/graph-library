@@ -53,7 +53,7 @@ private:
 
 public:
     WeightedGraph(bool isDirected = false);
-    WeightedGraph(const WeightedGraph &other);
+    WeightedGraph(const WeightedGraph &other); // Copy Constructor
     bool readGraphFromFile(string filepath);
     pair<float, list<int>> shortestPath(int source, int destination, bool heap = true);
     DijkstraResult dijkstraVector(int source, int destination = -1);
