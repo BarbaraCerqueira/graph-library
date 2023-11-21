@@ -30,8 +30,8 @@ int caseStudyTP3() {
             continue; // Skip this iteration and move to the next graph
         }
 
-        // Initialize graph
-        graph = new WeightedGraph();
+        // Initialize weighted directed graph
+        graph = new WeightedGraph(true); 
         graph->readGraphFromFile(pathGraph);
 
         cout << "Running tests on Graph " << test_number << "..." << endl;
