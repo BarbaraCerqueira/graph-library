@@ -39,7 +39,7 @@ int caseStudyTP3() {
 
         // Getting max flow from vertex 1 to 2
         cout << "Finding max flow..." << endl;
-        auto result = graph->fordFulkerson(1, 2, true);
+        auto result = graph->fordFulkerson(1, 2, false);
         resultsFile << result.first << ",";
 
         // Getting Ford Fulkerson average execution time
