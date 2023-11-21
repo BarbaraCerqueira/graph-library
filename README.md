@@ -13,7 +13,7 @@ Grafos sem peso:
 * Calcular diâmetro do grafo
 * Gerar arquivo com informações do grafo
 
-Grafos com peso (direcionado e não direcionado):
+Grafos com peso (direcionados ou não-direcionados):
 * Ler grafo de arquivo
 * Calcular distância e menor caminho entre vértices (Dijkstra usando Heap)
 * Calcular distância e menor caminho entre vértices (Dijkstra sem Heap)
