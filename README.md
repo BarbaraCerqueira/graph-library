@@ -13,10 +13,11 @@ Grafos sem peso:
 * Calcular diâmetro do grafo
 * Gerar arquivo com informações do grafo
 
-Grafos com peso:
+Grafos com peso (direcionado e não direcionado):
 * Ler grafo de arquivo
 * Calcular distância e menor caminho entre vértices (Dijkstra usando Heap)
 * Calcular distância e menor caminho entre vértices (Dijkstra sem Heap)
+* Encontrar fluxo máximo
 
 ## Instruções
 Para executar a interface de testes, use o comando:
