@@ -60,10 +60,8 @@ double fordFulkersonTime(WeightedGraph* graph, int iterations) {
 
     for (int i = 1; i <= iterations; ++i) {
         cout << "\rIteration " << i << " of " << iterations << flush;
-        int randomSource = getRandomVertex(graph->getNumVertices());
-        int randomSink = getRandomVertex(graph->getNumVertices());
-        duration = wallTime([&graph, &randomSource, &randomSink](){
-            graph->fordFulkerson(randomSource, randomSink, false);
+        duration = wallTime([&graph](){
+            graph->fordFulkerson(1, 2, false);
         });
         totalDuration += duration;
     }
